@@ -1,0 +1,12 @@
+bin
+.DS_Store
+.idea
+.vscode
+vendor
+
+# go executable built file
+gptbot
+gptbot.exe
+deploy.sh
+
+secrets.yaml

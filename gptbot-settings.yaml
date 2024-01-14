@@ -1,0 +1,5 @@
+database:
+  path: ../gptbot-ui/.sqlite/calendar.sqlite
+
+telegram:
+  
