@@ -1,7 +1,8 @@
 package openai
 
 type ImageResponse struct {
-	HttpStatus int `json:"status"`
+	HttpStatusCode int `json:"status"`
+	HttpStatusMessage string `json:"status_msg"`
 	Created int `json:"created"`
 	Data    []struct {
 		Url string `json:"url"`
