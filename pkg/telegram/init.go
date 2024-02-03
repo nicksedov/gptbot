@@ -27,22 +27,5 @@ func initBot() error {
 	if err != nil {
 		return fmt.Errorf("cannot create bot API: %w", err)
 	}
-	upd := tgbotapi.NewUpdate(0)
-	upd.Timeout = 60
-
-	handler := MessageChatGPTResponder{}
-	go updatesListener(upd, handler)
 	return nil
-}
-
-func updatesListener(upd tgbotapi.UpdateConfig, handler MessageHandler) {
-	// `for {` means the loop is infinite until we manually stop it
-	updatesChan := bot.GetUpdatesChan(upd)
-	for {
-		// execution thread locks until event received
-		update := <-updatesChan
-		if update.Message != nil {
-			handler.handle(update.Message)
-		}
-	}
 }

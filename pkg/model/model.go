@@ -1,6 +1,8 @@
-package database
+package model
 
-import "gorm.io/datatypes"
+import (
+	"gorm.io/datatypes"
+)
 
 type Prompt struct {
 	ID      uint `gorm:"primaryKey"`
@@ -24,6 +26,7 @@ type SingleEvent struct {
 	ID                uint `gorm:"primaryKey"`
 	Date              datatypes.Date
 	Time              datatypes.Time
+	TZOffset          int                      `gorm:"column:tzOffset"`
 	PromptID          uint                     `gorm:"column:promptId"`
 	Prompt            Prompt                   `gorm:"foreignKey:PromptID"`
 	EventPromptParams []SingleEventPromptParam `gorm:"foreignKey:EventID"`

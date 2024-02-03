@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/nicksedov/gptbot/pkg/database"
+	"github.com/nicksedov/gptbot/pkg/model"
 	"github.com/nicksedov/gptbot/pkg/telegram"
 )
 
 func main() {
 	flag.Parse()
-	events, dbErr := database.GetEvents()
+	events, dbErr := model.GetEvents()
 	if dbErr != nil {
 		panic(dbErr)
 	}
