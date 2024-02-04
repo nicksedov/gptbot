@@ -1,37 +1,20 @@
 package openai
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
-
-	"github.com/nicksedov/gptbot/pkg/cli"
 )
 
 var history map[int64][]Messages = make(map[int64][]Messages)
 var historyDepth int = 8
 
 func SendRequest(chatId int64, prompt string) *ChatResponse {
-	url := "https://api.openai.com/v1/chat/completions"
 	reqData := prepareRequest(chatId, prompt)
-	jsonData, err := json.Marshal(reqData)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	token := *cli.FlagOpenAIToken
-	request, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
-	request.Header.Set("Authorization", "Bearer "+token)
-	client := GetClient()
-	response, error := client.Do(request)
+	response, error := DoPost(CHAT_API, reqData)
 	if error != nil {
-		fmt.Printf("Error calling OpenAI API: %s", error)
 		panic(error)
 	}
-	fmt.Printf("OpenAI API response satus: %s", response.Status)
 
 	defer response.Body.Close()
 	body, error := io.ReadAll(response.Body)
@@ -42,7 +25,7 @@ func SendRequest(chatId int64, prompt string) *ChatResponse {
 	resp := &ChatResponse{}
 	error = json.Unmarshal(body, resp)
 	if error != nil {
-		fmt.Println(err)
+		fmt.Println(error)
 		return resp
 	}
 	processResponse(chatId, resp)

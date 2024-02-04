@@ -9,14 +9,14 @@ import (
 )
 
 type Secrets struct {
-	BotToken string      `yaml:"BotToken"`
-	OpenAIToken string   `yaml:"OpenAIToken"`
-	ProxyHost string     `yaml:"ProxyHost"`
-	ProxyUser string     `yaml:"ProxyUser"`
+	BotToken      string `yaml:"BotToken"`
+	OpenAIToken   string `yaml:"OpenAIToken"`
+	ProxyHost     string `yaml:"ProxyHost"`
+	ProxyUser     string `yaml:"ProxyUser"`
 	ProxyPassword string `yaml:"ProxyPassword"`
 }
 
-func InitTestCfg() {
+func initTestConfiguration() {
 	secrets := getSecrets()
 	*cli.FlagConfig = "../../gptbot-settings.yaml"
 	*cli.FlagBotToken = secrets.BotToken

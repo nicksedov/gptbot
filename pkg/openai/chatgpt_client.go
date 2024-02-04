@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/nicksedov/gptbot/pkg/cli"
 )
@@ -15,25 +16,53 @@ const (
 	IMAGE_API = "/images/generations"
 )
 
-func DoPost(api string, jsonStruct any) *http.Response {
+var httpClient *http.Client
 
-	jsonData, err := json.Marshal(jsonStruct)
+func GetClient() *http.Client {
+	if httpClient == nil {
+		transport := &http.Transport{}
+		if *cli.ProxyHost != "" {
+			proxyUrl := &url.URL{
+				Scheme: "http",
+				User:   url.UserPassword(*cli.ProxyUser, *cli.ProxyPassword),
+				Host:   *cli.ProxyHost,
+		  	}
+			transport.Proxy = http.ProxyURL(proxyUrl) // set proxy 
+		}
+		httpClient = &http.Client{Transport: transport}
+	}
+	return httpClient
+}
+
+func DoPost(api string, jsonData any) (*http.Response, error) {
+
+	jsonBody, err := json.Marshal(jsonData)
 	if err != nil {
-		fmt.Println(err)
-		return nil
+		return handleError("Error serializing object to JSON", err)
 	}
 	
-	
-	url := BASE_URL + api
+	url, err := url.JoinPath(BASE_URL, api)
+	if err != nil {
+		return handleError("Wrong API name format", err)
+	}
+
 	token := *cli.FlagOpenAIToken
-	request, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return handleError("Error building OpenAI HTTP request", err)
+	}
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 	request.Header.Set("Authorization", "Bearer " + token)
-	client := http.DefaultClient
-	response, error := client.Do(request)
-	if error != nil {
-		fmt.Printf("Error calling OpenAI API: %s", error)
-		return nil
+	client := GetClient()
+	response, err := client.Do(request)
+	if err != nil {
+		return handleError("Error calling OpenAI API", err)
 	}
-	return response
+
+	return response, nil
+}
+
+func handleError(summary string, err error) (*http.Response, error) {
+	fmt.Printf("%s: %v", summary, err)
+	return nil, err
 }

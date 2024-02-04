@@ -7,7 +7,7 @@ import (
 
 func TestSendRequest(t *testing.T) {
 
-	InitTestCfg()
+	initTestConfiguration()
 
 	resp := SendRequest(5093432423, "Hello buddy!")
 	fmt.Printf("Response ID is %s\n", resp.ID)
@@ -18,4 +18,3 @@ func TestSendRequest(t *testing.T) {
 		fmt.Println("Test failed")
 	}
 }
-
