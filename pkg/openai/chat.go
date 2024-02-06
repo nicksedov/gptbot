@@ -32,21 +32,21 @@ func SendRequest(chatId int64, prompt string) *ChatResponse {
 	return resp
 }
 
-func updateHistory(userId int64, role string, content string) {
-	userHist := history[userId]
+func updateHistory(chatId int64, role string, content string) {
+	userHist := history[chatId]
 	if userHist == nil {
 		userHist = []Messages{}
 	} else if len(userHist) >= historyDepth {
 		userHist = userHist[len(userHist)-historyDepth:]
 	}
 	userHist = append(userHist, Messages{Role: role, Content: content})
-	history[userId] = userHist
+	history[chatId] = userHist
 }
 
 func prepareRequest(chatId int64, content string) *ChatRequest {
 	updateHistory(chatId, "user", content)
 	req := ChatRequest{
-		Model:    "gpt-3.5-turbo",
+		Model:    "gpt-3.5-turbo-0125",
 		Messages: history[chatId],
 	}
 	return &req

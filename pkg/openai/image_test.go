@@ -7,10 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var PROMPT_EXAMPLE = [...]string{
-	"Draw a picture of a humanoid robot with lightbulb instead of a nose",
-	"Draw a picture of a family having a picnic in the garden",
-	"Нарисуй важные дела",
+var IMAGE_PROMPT_EXAMPLES = [...]string{
+	"Draw a cat in black and white stripes",
 }
 
 func TestSendImageRequest(t *testing.T) {
@@ -19,7 +17,7 @@ func TestSendImageRequest(t *testing.T) {
 
 	// Prepare test conditions
 	expectedNum := 1
-	prompt := PROMPT_EXAMPLE[2]
+	prompt := IMAGE_PROMPT_EXAMPLES[0]
 
 	// Run test method
 	resp := SendImageRequest(DALLE_2, DALLE_2_MID, expectedNum, prompt)

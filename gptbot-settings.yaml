@@ -1,5 +1,9 @@
+server:
+  host: localhost
+  port: 8998
+
 database:
   path: ../gptbot-ui/.sqlite/calendar.sqlite
 
 telegram:
-  
+    

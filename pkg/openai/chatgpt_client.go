@@ -34,6 +34,29 @@ func GetClient() *http.Client {
 	return httpClient
 }
 
+func DoGet(api string) (*http.Response, error) {
+
+	url, err := url.JoinPath(BASE_URL, api)
+	if err != nil {
+		return handleError("Wrong API name format", err)
+	}
+
+	token := *cli.FlagOpenAIToken
+	request, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return handleError("Error building OpenAI HTTP request", err)
+	}
+	request.Header.Set("Accept", "application/json")
+	request.Header.Set("Authorization", "Bearer " + token)
+	client := GetClient()
+	response, err := client.Do(request)
+	if err != nil {
+		return handleError("Error calling OpenAI API", err)
+	}
+
+	return response, nil
+}
+
 func DoPost(api string, jsonData any) (*http.Response, error) {
 
 	jsonBody, err := json.Marshal(jsonData)
