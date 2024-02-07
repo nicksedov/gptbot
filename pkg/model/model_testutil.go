@@ -20,7 +20,7 @@ var event = SingleEvent{
 	Date:     datatypes.Date(testDate),
 	Time:     datatypes.NewTime(hour, min, sec, ns),
 	TZOffset: tzOffset,
-	TelegramChatID: -999,
+	TelegramChatID: 1,
 	PromptID: 0,
 	Prompt: Prompt{
 		ID:      0,
@@ -53,6 +53,11 @@ var event = SingleEvent{
 				PromptID: 0,
 			},
 		},
+	},
+	Chat: TelegramChat{
+		ID: 1,
+		ChatID: -999,
+		ChatName: "Test group",
 	},
 }
 

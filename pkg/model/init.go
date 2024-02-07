@@ -18,6 +18,6 @@ func GetEvents() ([]SingleEvent, error) {
 		log.Fatal("failed to connect database")
 		return nil, err
 	}
-	sqliteDb.Preload("EventPromptParams.PromptParam").Preload(clause.Associations).Find(&events)
+	sqliteDb.Preload("EventPromptParams.PromptParam").Preload("Chat").Preload(clause.Associations).Find(&events)
 	return events, nil
 }

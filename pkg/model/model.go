@@ -22,15 +22,26 @@ func (PromptParam) TableName() string {
 	return "prompt_params"
 }
 
+type TelegramChat struct {
+	ID       uint   `gorm:"primaryKey"`
+	ChatID   int64  `gorm:"column:chatId"`
+	ChatName string `gorm:"column:chatName"`
+}
+
+func (TelegramChat) TableName() string {
+	return "telegram_chats"
+}
+
 type SingleEvent struct {
 	ID                uint `gorm:"primaryKey"`
 	Date              datatypes.Date
 	Time              datatypes.Time
 	TZOffset          int                      `gorm:"column:tzOffset"`
-	TelegramChatID    int                      `gorm:"column:telegramChatId"`
+	TelegramChatID    uint                     `gorm:"column:telegramChatId"`
 	PromptID          uint                     `gorm:"column:promptId"`
 	Prompt            Prompt                   `gorm:"foreignKey:PromptID"`
 	EventPromptParams []SingleEventPromptParam `gorm:"foreignKey:EventID"`
+	Chat              TelegramChat             `gorm:"foreignKey:TelegramChatID"`
 }
 
 func (SingleEvent) TableName() string {
