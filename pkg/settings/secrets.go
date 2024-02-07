@@ -1,11 +1,10 @@
-package openai
+package settings
 
 import (
 	"log"
 	"os"
 
 	"github.com/go-yaml/yaml"
-	"github.com/nicksedov/gptbot/pkg/cli"
 )
 
 type Secrets struct {
@@ -16,19 +15,9 @@ type Secrets struct {
 	ProxyPassword string `yaml:"ProxyPassword"`
 }
 
-func initTestConfiguration() {
-	secrets := getSecrets()
-	*cli.FlagConfig = "../../gptbot-settings.yaml"
-	*cli.FlagBotToken = secrets.BotToken
-	*cli.FlagOpenAIToken = secrets.OpenAIToken
-	*cli.ProxyHost = secrets.ProxyHost
-	*cli.ProxyUser = secrets.ProxyUser
-	*cli.ProxyPassword = secrets.ProxyPassword
-}
-
-func getSecrets() Secrets {
+func GetSecrets(path string) Secrets {
 	secrets := Secrets{}
-	yfile, ioErr := os.ReadFile("../../secrets.yaml")
+	yfile, ioErr := os.ReadFile(path)
 	if ioErr == nil {
 		ymlErr := yaml.Unmarshal(yfile, &secrets)
 		if ymlErr != nil {

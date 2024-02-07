@@ -27,6 +27,7 @@ type SingleEvent struct {
 	Date              datatypes.Date
 	Time              datatypes.Time
 	TZOffset          int                      `gorm:"column:tzOffset"`
+	TelegramChatID    int                      `gorm:"column:telegramChatId"`
 	PromptID          uint                     `gorm:"column:promptId"`
 	Prompt            Prompt                   `gorm:"foreignKey:PromptID"`
 	EventPromptParams []SingleEventPromptParam `gorm:"foreignKey:EventID"`
