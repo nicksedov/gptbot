@@ -4,10 +4,17 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func SendMessageToChat(mc tgbotapi.Chattable) error {
+func SendMessageToChat(mc tgbotapi.Chattable) (tgbotapi.Message, error) {
+	var msg tgbotapi.Message
 	bot, err := GetBot()
 	if err == nil {
-		_, err = bot.Send(mc)
+		msg, err = bot.Send(mc)
 	}
-	return err
+	return msg, err
+}
+
+func SendMarkdownText(content string, chatId int64) (tgbotapi.Message, error) {
+	chattable := tgbotapi.NewMessage(chatId, content)
+	chattable.ParseMode = "markdown"
+	return SendMessageToChat(chattable)
 }
