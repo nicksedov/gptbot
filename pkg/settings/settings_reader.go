@@ -15,18 +15,17 @@ import (
 	"github.com/nicksedov/gptbot/pkg/cli"
 )
 
-var settings Settings = Settings{}
-var initialized bool = false
+var settings *Settings
 
 func GetSettings() *Settings {
-	if !initialized {
+	if settings == nil {
 		readSettingsFile()
-		initialized = true
 	}
-	return &settings
+	return settings
 }
 
 func readSettingsFile() {
+	settings = &Settings{}
 	if strings.TrimSpace(*cli.FlagConfig) != "" {
 		yfile, ioErr := os.ReadFile(*cli.FlagConfig)
 		if ioErr == nil {

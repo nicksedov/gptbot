@@ -17,7 +17,7 @@ func TestSchedule(t *testing.T) {
 	eventsToSchedule := 5
 	eventsInterval := 100 * time.Millisecond
 	// Expected that last event will be fired after given amount of time
-	expectedCompletionTime := time.Duration(eventsToSchedule * int(eventsInterval))
+	expectedCompletionTime := time.Duration(int64(eventsInterval) * int64(eventsToSchedule))
 	
 	// Create events in the future
 	var events []model.SingleEvent
@@ -29,11 +29,15 @@ func TestSchedule(t *testing.T) {
 
 	// Run test
 	Schedule(events, handler)
-	
+
+	overlapTime := 100 * time.Millisecond
+	// Scheduled events execute asynchronously in goroutines; need to wait enough time until they complete
+	time.Sleep(expectedCompletionTime + overlapTime)
+
 	// Evaluate real duration and compare with expected
 	actualTime := handler.fireTime.Sub(handler.triggerTime)
 	assert.GreaterOrEqual(t, actualTime, expectedCompletionTime)
-	assert.LessOrEqual(t, actualTime, expectedCompletionTime + 100*time.Millisecond)
+	assert.LessOrEqual(t, actualTime, expectedCompletionTime + overlapTime)
 	assert.Equal(t, eventsToSchedule, handler.fireCount)
 }
 
@@ -43,7 +47,10 @@ type TestEventHandler struct {
 	fireCount int
 }
 
-func (h *TestEventHandler) handle(t *model.SingleEvent) {
+func (h *TestEventHandler) handle(t *model.SingleEvent) error {
 	h.fireTime = time.Now()
 	h.fireCount++
+	return nil
 }
+
+func (h *TestEventHandler) onError(e error) {}
