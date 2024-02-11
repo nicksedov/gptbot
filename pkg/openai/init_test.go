@@ -5,12 +5,10 @@ import (
 	"github.com/nicksedov/gptbot/pkg/settings"
 )
 
-
 func initTestConfiguration() {
-	secrets :=settings.GetSecrets("../../secrets.yaml")
+	secrets := settings.GetSecrets("../../secrets.yaml")
 	*cli.FlagOpenAIToken = secrets.OpenAIToken
-	*cli.ProxyHost = secrets.ProxyHost
+	*cli.Proxy = secrets.Proxy
 	*cli.ProxyUser = secrets.ProxyUser
 	*cli.ProxyPassword = secrets.ProxyPassword
 }
-

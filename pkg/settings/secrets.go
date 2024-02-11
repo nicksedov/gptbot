@@ -10,7 +10,7 @@ import (
 type Secrets struct {
 	BotToken      string `yaml:"BotToken"`
 	OpenAIToken   string `yaml:"OpenAIToken"`
-	ProxyHost     string `yaml:"ProxyHost"`
+	Proxy         string `yaml:"Proxy"`
 	ProxyUser     string `yaml:"ProxyUser"`
 	ProxyPassword string `yaml:"ProxyPassword"`
 }
