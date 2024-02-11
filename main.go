@@ -3,31 +3,34 @@ package main
 import (
 	"flag"
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 
-	"github.com/nicksedov/gptbot/pkg/model"
-	"github.com/nicksedov/gptbot/pkg/scheduler"
+	"github.com/nicksedov/gptbot/pkg/controller"
+	"github.com/nicksedov/gptbot/pkg/service"
 	"github.com/nicksedov/gptbot/pkg/settings"
 	"github.com/nicksedov/gptbot/pkg/telegram"
 )
 
 func main() {
 	flag.Parse()
-	events, dbErr := model.GetEvents()
-	if dbErr != nil {
-		panic(dbErr)
-	}
-	fmt.Printf("%v", events)
+	// Init telegram bot
 	_, tgErr := telegram.GetBot()
 	if tgErr != nil {
 		panic(tgErr)
 	}
-	var h *scheduler.GptChatEventHandler = &scheduler.GptChatEventHandler{}
-	scheduler.Schedule(events, h)
-
+	// Init database and read events
+	_, dbErr := service.LoadAndScheduleEvents()
+	if dbErr != nil {
+		panic(dbErr)
+	}
+	// Init HTTP server
 	settings := settings.GetSettings()
 	router := gin.Default()
-    //example: router.GET("/albums", getAlbums)
-
-    router.Run(fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port))
+	router.GET("/events/refresh", controller.EventRefresh)
+	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)
+	srvErr := router.Run(serverAddress)
+	if srvErr != nil {
+		panic(dbErr)
+	}
 }

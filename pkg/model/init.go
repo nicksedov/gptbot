@@ -9,15 +9,24 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-var events []SingleEvent
+var sqliteDb *gorm.DB
+
+func initDb() (*gorm.DB, error) {
+	var err error
+	if sqliteDb == nil {
+		dbConfig := settings.GetSettings().DbConfig
+		sqliteDb, err = gorm.Open(sqlite.Open(dbConfig.Path), &gorm.Config{})
+	}
+	return sqliteDb, err
+}
 
 func GetEvents() ([]SingleEvent, error) {
-	dbConfig := settings.GetSettings().DbConfig
-	sqliteDb, err := gorm.Open(sqlite.Open(dbConfig.Path), &gorm.Config{})
+	db, err := initDb()
 	if err != nil {
 		log.Fatal("failed to connect database")
 		return nil, err
 	}
-	sqliteDb.Preload("EventPromptParams.PromptParam").Preload("Chat").Preload(clause.Associations).Find(&events)
+	var events []SingleEvent
+	db.Preload("EventPromptParams.PromptParam").Preload("Chat").Preload(clause.Associations).Find(&events)
 	return events, nil
 }
