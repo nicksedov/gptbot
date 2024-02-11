@@ -22,6 +22,7 @@ ProxyUser: <proxy_user>
 ProxyPassword: <proxy_pass>
 BotToken: <bot_token>
 OpenAIToken: <openai_token>
+TelegramChatID: <test_chat_id>
 ```
 ## Развертывание в продакшн
 

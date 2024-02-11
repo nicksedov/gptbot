@@ -13,6 +13,7 @@ type Secrets struct {
 	Proxy         string `yaml:"Proxy"`
 	ProxyUser     string `yaml:"ProxyUser"`
 	ProxyPassword string `yaml:"ProxyPassword"`
+	TgChatID      int64  `yaml:"TelegramChatID"`
 }
 
 func GetSecrets(path string) Secrets {
