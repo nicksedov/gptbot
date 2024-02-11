@@ -9,4 +9,5 @@ gptbot
 gptbot.exe
 deploy.sh
 
+settings.yaml
 secrets.yaml
