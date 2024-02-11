@@ -1,6 +1,0 @@
-server:
-  host: 
-  port: 8998
-
-database:
-  path: ../.sqlite/calendar.sqlite
