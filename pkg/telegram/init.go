@@ -27,5 +27,8 @@ func initBot() error {
 	if err != nil {
 		return fmt.Errorf("cannot create bot API: %w", err)
 	}
+	upd := tgbotapi.NewUpdate(0)
+	upd.Timeout = 60
+	go updatesListener(bot.GetUpdatesChan(upd))
 	return nil
 }
