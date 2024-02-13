@@ -27,6 +27,7 @@ func main() {
 	// Init HTTP server
 	settings := settings.GetSettings()
 	router := gin.Default()
+	router.GET("/events/list", controller.EventList)
 	router.GET("/events/refresh", controller.EventRefresh)
 	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)
 	srvErr := router.Run(serverAddress)

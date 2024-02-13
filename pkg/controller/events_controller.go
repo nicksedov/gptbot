@@ -5,8 +5,18 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nicksedov/gptbot/pkg/model"
 	"github.com/nicksedov/gptbot/pkg/service"
 )
+
+func EventList(c *gin.Context) {
+	events, err := model.GetEvents()
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"Status": "OK", "Events": events})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
+	}
+}
 
 func EventRefresh(c *gin.Context) {
 	events, err := service.LoadAndScheduleEvents()
