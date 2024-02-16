@@ -18,6 +18,16 @@ func EventList(c *gin.Context) {
 	}
 }
 
+func EventView(c *gin.Context) {
+	eventsTab, err := service.GetEventsTabView()
+	
+	if err == nil {
+		c.JSON(http.StatusOK, eventsTab)
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
+	}
+}
+
 func EventRefresh(c *gin.Context) {
 	events, err := service.LoadAndScheduleEvents()
 	if err == nil {

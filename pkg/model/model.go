@@ -10,6 +10,12 @@ type Prompt struct {
 	Prompt  string
 	AltText string `gorm:"column:altText"`
 }
+func (p Prompt) GetId() uint {
+	return p.ID
+}
+func (p Prompt) GetValue() string {
+	return p.Title
+}
 
 type PromptParam struct {
 	ID       uint `gorm:"primaryKey"`
@@ -17,7 +23,6 @@ type PromptParam struct {
 	Title    string
 	PromptID uint `gorm:"column:promptId"`
 }
-
 func (PromptParam) TableName() string {
 	return "prompt_params"
 }
@@ -30,6 +35,12 @@ type TelegramChat struct {
 
 func (TelegramChat) TableName() string {
 	return "telegram_chats"
+}
+func (tc TelegramChat) GetId() uint {
+	return tc.ID
+}
+func (tc TelegramChat) GetValue() string {
+	return tc.ChatName
 }
 
 type SingleEvent struct {
