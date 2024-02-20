@@ -5,7 +5,7 @@ import (
 )
 
 type Prompt struct {
-	ID      uint `gorm:"primaryKey"`
+	ID      uint `gorm:"unique;primaryKey;autoIncrement"`
 	Title   string
 	Prompt  string
 	AltText string `gorm:"column:altText"`
@@ -18,24 +18,18 @@ func (p Prompt) GetValue() string {
 }
 
 type PromptParam struct {
-	ID       uint `gorm:"primaryKey"`
+	ID       uint `gorm:"unique;primaryKey;autoIncrement"`
 	Tag      string
 	Title    string
 	PromptID uint `gorm:"column:promptId"`
 }
-func (PromptParam) TableName() string {
-	return "prompt_params"
-}
 
 type TelegramChat struct {
-	ID       uint   `gorm:"primaryKey"`
+	ID       uint   `gorm:"unique;primaryKey;autoIncrement"`
 	ChatID   int64  `gorm:"column:chatId"`
 	ChatName string `gorm:"column:chatName"`
 }
 
-func (TelegramChat) TableName() string {
-	return "telegram_chats"
-}
 func (tc TelegramChat) GetId() uint {
 	return tc.ID
 }
@@ -44,7 +38,7 @@ func (tc TelegramChat) GetValue() string {
 }
 
 type SingleEvent struct {
-	ID                uint `gorm:"primaryKey"`
+	ID                uint `gorm:"unique;primaryKey;autoIncrement"`
 	Date              datatypes.Date
 	Time              datatypes.Time
 	TZOffset          int                      `gorm:"column:tzOffset"`
@@ -55,18 +49,10 @@ type SingleEvent struct {
 	Chat              TelegramChat             `gorm:"foreignKey:TelegramChatID"`
 }
 
-func (SingleEvent) TableName() string {
-	return "single_events"
-}
-
 type SingleEventPromptParam struct {
-	ID            uint `gorm:"primaryKey"`
+	ID            uint `gorm:"unique;primaryKey;autoIncrement"`
 	Value         string
 	EventID       uint        `gorm:"column:singleEventId"`
 	PromptParamID uint        `gorm:"column:promptParamId"`
 	PromptParam   PromptParam `gorm:"foreignKey:PromptParamID"`
-}
-
-func (SingleEventPromptParam) TableName() string {
-	return "single_event_prompt_params"
 }

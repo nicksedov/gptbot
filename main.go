@@ -30,6 +30,7 @@ func main() {
 	router.GET("/events/list", controller.EventList)
 	router.GET("/events/view", controller.EventView)
 	router.GET("/events/refresh", controller.EventRefresh)
+	router.POST("/events/create", controller.EventCreate)
 	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)
 	srvErr := router.Run(serverAddress)
 	if srvErr != nil {
