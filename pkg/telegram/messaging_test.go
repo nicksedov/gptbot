@@ -5,23 +5,27 @@ import (
 	"testing"
 
 	"github.com/nicksedov/gptbot/pkg/cli"
+	"github.com/nicksedov/gptbot/pkg/settings"
 	"github.com/stretchr/testify/assert"
 )
 
+var testChatId int64
+
+func init() {
+	cliParams := settings.GetCliParamsFromFile("../../test_cli_params.yaml")
+	*cli.FlagBotToken = cliParams.BotToken
+	testChatId = cliParams.TgChatID
+}
+
 func TestBotInit(t *testing.T) {
-
-	initTestConfiguration()
-
+	assert.NotEqual(t, 0, testChatId)
 	bot, err := GetBot()
-
 	assert.Nil(t, err)
 	assert.NotNil(t, bot)
 	assert.Equal(t, bot.Token, *cli.FlagBotToken)
 }
 func TestSendMarkdownMessage(t *testing.T) {
-
-	testChatId := initTestConfiguration()
-
+	assert.NotEqual(t, 0, testChatId)
 	text := fmt.Sprintf("Это сообщение отправлено из unit-теста.\n"+
 		"Проект: ```%s```\nМетод: ```%s```\nРасположение: ```%s```",
 		"gptbot", "TestSendMarkdownMessage()", "gptbot/pkg/telegram/messaging_test.go")

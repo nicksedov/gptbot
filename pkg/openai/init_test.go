@@ -6,9 +6,9 @@ import (
 )
 
 func initTestConfiguration() {
-	secrets := settings.GetSecrets("../../secrets.yaml")
-	*cli.FlagOpenAIToken = secrets.OpenAIToken
-	*cli.Proxy = secrets.Proxy
-	*cli.ProxyUser = secrets.ProxyUser
-	*cli.ProxyPassword = secrets.ProxyPassword
+	cliParams := settings.GetCliParamsFromFile("../../test_cli_params.yaml")
+	*cli.FlagOpenAIToken = cliParams.OpenAIToken
+	*cli.Proxy = cliParams.Proxy
+	*cli.ProxyUser = cliParams.ProxyUser
+	*cli.ProxyPassword = cliParams.ProxyPassword
 }

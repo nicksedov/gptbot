@@ -11,4 +11,4 @@ deploy.sh
 __debug_*
 
 settings.yaml
-secrets.yaml
+test_cli_params.yaml

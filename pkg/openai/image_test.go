@@ -11,9 +11,11 @@ var IMAGE_PROMPT_EXAMPLES = [...]string{
 	"Draw a cat in black and white stripes",
 }
 
-func TestSendImageRequest(t *testing.T) {
-
+func init() {
 	initTestConfiguration()
+}
+
+func TestSendImageRequest(t *testing.T) {
 
 	// Prepare test conditions
 	expectedNum := 1

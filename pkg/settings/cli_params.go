@@ -7,7 +7,7 @@ import (
 	"github.com/go-yaml/yaml"
 )
 
-type Secrets struct {
+type CommandLineParams struct {
 	BotToken      string `yaml:"BotToken"`
 	OpenAIToken   string `yaml:"OpenAIToken"`
 	Proxy         string `yaml:"Proxy"`
@@ -16,14 +16,14 @@ type Secrets struct {
 	TgChatID      int64  `yaml:"TelegramChatID"`
 }
 
-func GetSecrets(path string) Secrets {
-	secrets := Secrets{}
+func GetCliParamsFromFile(path string) CommandLineParams {
+	cliParams := CommandLineParams{}
 	yfile, ioErr := os.ReadFile(path)
 	if ioErr == nil {
-		ymlErr := yaml.Unmarshal(yfile, &secrets)
+		ymlErr := yaml.Unmarshal(yfile, &cliParams)
 		if ymlErr != nil {
 			log.Fatal(ymlErr)
 		}
 	}
-	return secrets
+	return cliParams
 }
