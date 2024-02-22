@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -9,18 +10,18 @@ import (
 	"gorm.io/datatypes"
 )
 
-func CreateEvent(ev *view.NewEventFormView) error {
-	var params *[]model.SingleEventPromptParam = new([]model.SingleEventPromptParam) 
+func CreateEventFromView(ev *view.NewEventFormView) (*model.SingleEvent, error) {
+	var params *[]model.SingleEventPromptParam = new([]model.SingleEventPromptParam)
 	var event model.SingleEvent
 
 	date, err := time.Parse(time.DateOnly, ev.Date)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	gormTime := new(datatypes.Time)
 	err = gormTime.Scan(ev.Time)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	event.PromptID = ev.PromptID
 	event.Date = datatypes.Date(date)
@@ -36,14 +37,10 @@ func CreateEvent(ev *view.NewEventFormView) error {
 		}
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
 	event.EventPromptParams = *params
-
-
-	model.AddEvent(event)
-
-	return nil
+	return &event, nil
 }
 
 func appendParam(pp *[]model.SingleEventPromptParam, id, value string) (*[]model.SingleEventPromptParam, error) {
@@ -56,4 +53,9 @@ func appendParam(pp *[]model.SingleEventPromptParam, id, value string) (*[]model
 		return &res, nil
 	}
 	return pp, nil
+}
+
+func DeleteEvent(id uint64) error {
+	fmt.Printf("Deleting record with id=%d", id)
+	return nil
 }

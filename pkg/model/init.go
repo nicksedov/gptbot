@@ -29,35 +29,47 @@ func initDb() (*gorm.DB, error) {
 	return db, err
 }
 
-func GetEvents() ([]SingleEvent, error) {
+func Get[T any](finder func(items *[]T, db *gorm.DB)) (*[]T, error) {
 	db, err := initDb()
 	if err != nil {
 		log.Fatal("failed to connect database")
 		return nil, err
 	}
-	var events []SingleEvent
-	db.Preload("EventPromptParams.PromptParam").Joins("Prompt").Joins("Chat").Find(&events)
-	return events, nil
-}
-
-func GetAll[T any]() ([]T, error) {
-	db, err := initDb()
-	if err != nil {
-		log.Fatal("failed to connect database")
-		return nil, err
-	}
-	var items []T
-	db.Find(&items)
+	items := new([]T)
+	finder(items, db)
 	return items, nil
+} 
+
+func GetEvents() (*[]SingleEvent, error) {
+	return Get(func(events *[]SingleEvent, db *gorm.DB) {
+		db.Preload("EventPromptParams.PromptParam").Joins("Prompt").Joins("Chat").Find(events)
+	})	
 }
 
-func AddEvent(ev SingleEvent) error {
+func GetAll[T any]() (*[]T, error) {
+	return Get(func(items *[]T, db *gorm.DB) {
+		db.Find(items)
+	})
+}
+
+func AddEvent(ev *SingleEvent) error {
 	db, err := initDb()
 	if err != nil {
 		log.Fatal("failed to connect database")
 		return err
 	}
-	tx := db.Create(&ev).Omit("Prompt", "Chat")
+	tx := db.Create(ev).Omit("Prompt", "Chat")
 	tx.Commit()
+	return nil
+}
+
+func DeleteEvent(id uint) error {
+	db, err := initDb()
+	if err != nil {
+		log.Fatal("failed to connect database")
+		return err
+	}
+	db.Where("\"singleEventId\" = ?", id).Delete(&SingleEventPromptParam{})
+	db.Delete(&SingleEvent{ID: id})
 	return nil
 }

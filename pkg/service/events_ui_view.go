@@ -19,9 +19,9 @@ func GetEventsTabView() (*view.EventsTabView, error) {
 	}
 	chatItems := getAsDropdown(chats)
 
-	eventViewMap := make(map[uint]view.EventView, len(events))
-	eventOrderMap := make(map[uint]time.Time, len(events))
-	for _, ev := range events {
+	eventViewMap := make(map[uint]view.EventView, len(*events))
+	eventOrderMap := make(map[uint]time.Time, len(*events))
+	for _, ev := range *events {
 		evTime := ev.GetTime()
 		tzOffset := ev.TZOffset
 		prompt, err := ev.GetResolvedPrompt()
@@ -56,8 +56,8 @@ func GetEventsTabView() (*view.EventsTabView, error) {
 	if dbErr != nil {
 		return nil, dbErr
 	}
-	promptParamViews := make([]view.PromptParamView, len(promptParams))
-	for i, promptParamItem := range promptParams {
+	promptParamViews := make([]view.PromptParamView, len(*promptParams))
+	for i, promptParamItem := range *promptParams {
 		promptParamViews[i] = view.PromptParamView{ID: promptParamItem.ID, PromptID: promptParamItem.PromptID, Title: promptParamItem.Title}
 	} 
 
@@ -75,9 +75,9 @@ func orderIDsByTime(idByTimeMap map[uint]time.Time) []uint {
 	return keys
 }
 
-func getAsDropdown[T model.IDValue](idValueList []T) []view.DropdownItem {
-	listItems := make([]view.DropdownItem, len(idValueList))
-	for i, idValue := range idValueList {
+func getAsDropdown[T model.IDValue](idValueList *[]T) []view.DropdownItem {
+	listItems := make([]view.DropdownItem, len(*idValueList))
+	for i, idValue := range *idValueList {
 		listItems[i] = view.DropdownItem{ID: idValue.GetId(), Value: idValue.GetValue()}
 	}
 	return listItems

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,6 @@ func EventList(c *gin.Context) {
 
 func EventView(c *gin.Context) {
 	eventsTab, err := service.GetEventsTabView()
-	
 	if err == nil {
 		c.JSON(http.StatusOK, eventsTab)
 	} else {
@@ -32,22 +32,44 @@ func EventView(c *gin.Context) {
 func EventCreate(c *gin.Context) {
 	var newEvent view.NewEventFormView
 	c.ShouldBindJSON(&newEvent)
-	err := service.CreateEvent(&newEvent)
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
+	event, err := service.CreateEventFromView(&newEvent)
+	if err == nil {
+		model.AddEvent(event)
+		service.LoadAndScheduleEvents()
+		c.Status(http.StatusOK)
+	} else {
+		errorResponse(c, err)
 	}
-	c.Status(http.StatusOK)
+}
+
+func EventDelete(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Params.ByName("id"), 0, 0)
+	if err == nil {
+		err := model.DeleteEvent(uint(id))
+		if err == nil {
+			service.LoadAndScheduleEvents()
+			c.Status(http.StatusOK)
+		} else {
+			errorResponse(c, err)
+		}
+	} else {
+		errorResponse(c, err)
+	}
 }
 
 func EventRefresh(c *gin.Context) {
 	events, err := service.LoadAndScheduleEvents()
 	if err == nil {
 		schedule := make(map[uint]time.Time)
-		for _, event := range events {
+		for _, event := range *events {
 			schedule[event.ID] = event.GetTime()
 		}
 		c.JSON(http.StatusOK, gin.H{"Status": "OK", "Schedule": schedule})
 	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
+		errorResponse(c, err)
 	}
+}
+
+func errorResponse(c *gin.Context, err error) {
+	c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
 }

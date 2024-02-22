@@ -18,11 +18,11 @@ func initScheduler() *tasks.Scheduler {
 	return scheduler
 }
 
-func Schedule(events []model.SingleEvent, h EventHandler) {
+func Schedule(events *[]model.SingleEvent, h EventHandler) {
 	
 	scheduler := initScheduler()
 
-	for _, event := range events {
+	for _, event := range (*events) {
 		fireTime := event.GetTime()
 		duration := time.Until(fireTime)
 		if duration > 0 {
