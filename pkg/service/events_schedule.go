@@ -5,8 +5,8 @@ import (
 	"github.com/nicksedov/gptbot/pkg/scheduler"
 )
 
-func LoadAndScheduleEvents() (*[]model.SingleEvent, error) {
-	events, dbErr := model.GetEvents()
+func ScheduleEvents() (*[]model.SingleEvent, error) {
+	events, dbErr := model.ReadEvents()
 	if dbErr != nil {
 		return nil, dbErr
 	}

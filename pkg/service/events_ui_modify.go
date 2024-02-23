@@ -11,8 +11,8 @@ import (
 )
 
 func BuildEventFromCreateView(ev *view.NewEventFormView) (*model.SingleEvent, error) {
+	var event *model.SingleEvent = &model.SingleEvent{}
 	var params *[]model.SingleEventPromptParam = new([]model.SingleEventPromptParam)
-	var event model.SingleEvent
 
 	date, err := time.Parse(time.DateOnly, ev.Date)
 	if err != nil {
@@ -40,7 +40,7 @@ func BuildEventFromCreateView(ev *view.NewEventFormView) (*model.SingleEvent, er
 		return nil, err
 	}
 	event.EventPromptParams = *params
-	return &event, nil
+	return event, nil
 }
 
 func appendParam(pp *[]model.SingleEventPromptParam, id, value string) (*[]model.SingleEventPromptParam, error) {

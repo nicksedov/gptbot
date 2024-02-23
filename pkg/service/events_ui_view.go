@@ -10,7 +10,7 @@ import (
 )
 
 func GetEventsTabView(offsetParam string) (*view.EventsTabView, error) {
-	events, dbErr := model.GetEvents()
+	events, dbErr := model.ReadEvents()
 	if dbErr != nil {
 		return nil, dbErr
 	}

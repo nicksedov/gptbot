@@ -1,17 +1,30 @@
 package view
 
 type PromptsTabView struct {
-	PromptViews []PromptFormView `json:"prompts"`
+	PromptViews []PromptView `json:"prompts"`
 }
 
-type PromptFormView struct {
-	Title        string `json:"title"`
-	Prompt       string `json:"prompt"`
-	AltText      string `json:"altText"`
-	PromptParams []PromptParam  `json:"prompt_params"`
+type PromptView struct {
+	ID           uint          `json:"id"`
+	Title        string        `json:"title"`
+	Prompt       string        `json:"prompt"`
+	AltText      string        `json:"altText"`
+	PromptParams []PromptParam `json:"prompt_params"`
 }
 
 type PromptParam struct {
 	Tag   string `json:"tag"`
 	Title string `json:"title"`
+}
+
+type NewPromptFormView struct {
+	Title       string `json:"title"`
+	Prompt      string `json:"prompt"`
+	AltText     string `json:"altText"`
+	ParamTag1   string `json:"p1_name"`
+	ParamTitle1 string `json:"p1_title"`
+	ParamTag2   string `json:"p2_name"`
+	ParamTitle2 string `json:"p2_title"`
+	ParamTag3   string `json:"p3_name"`
+	ParamTitle3 string `json:"p3_title"`
 }

@@ -6,14 +6,14 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetEvents() (*[]SingleEvent, error) {
+func ReadEvents() (*[]SingleEvent, error) {
 	findAllEvents := func(events *[]SingleEvent, db *gorm.DB) {
 		db.Preload("EventPromptParams.PromptParam").Joins("Prompt").Joins("Chat").Find(events)
 	}
-	return read(findAllEvents)	
+	return read(findAllEvents)
 }
 
-func AddEvent(ev *SingleEvent) error {
+func CreateEvent(ev *SingleEvent) error {
 	db, err := initDb()
 	if err != nil {
 		log.Fatal("failed to connect database")

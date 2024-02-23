@@ -11,9 +11,9 @@ func GetPromptsTabView() (*view.PromptsTabView, error) {
 	if dbErr != nil {
 		return nil, dbErr
 	}
-	promptsMap := make(map[uint]*view.PromptFormView, len(*prompts))
+	promptsMap := make(map[uint]*view.PromptView, len(*prompts))
 	for _, prompt := range *prompts {
-		promptView := view.PromptFormView{Title: prompt.Title, Prompt: prompt.Prompt, AltText: prompt.AltText}
+		promptView := view.PromptView{ID: prompt.ID, Title: prompt.Title, Prompt: prompt.Prompt, AltText: prompt.AltText}
 		promptsMap[prompt.ID] = &promptView
 	}
 
@@ -28,8 +28,8 @@ func GetPromptsTabView() (*view.PromptsTabView, error) {
 			(*promptsMap[id]).PromptParams = append((*promptsMap[id]).PromptParams, pp)
 		}
 	}
-	promptViews := make([]view.PromptFormView, 0, len(promptsMap))
-	for  _, value := range promptsMap {
+	promptViews := make([]view.PromptView, 0, len(promptsMap))
+	for _, value := range promptsMap {
 		promptViews = append(promptViews, *value)
 	}
 	return &view.PromptsTabView{PromptViews: promptViews}, nil

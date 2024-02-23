@@ -25,7 +25,7 @@ func EventCreate(c *gin.Context) {
 	c.ShouldBindJSON(&newEvent)
 	event, err := service.BuildEventFromCreateView(&newEvent)
 	if err == nil {
-		err = model.AddEvent(event)
+		err = model.CreateEvent(event)
 	}
 	onEventsChanged(c, err)
 }
@@ -54,7 +54,7 @@ func EventDelete(c *gin.Context) {
 
 func onEventsChanged(c *gin.Context, err error) {
 	if err == nil {
-		service.LoadAndScheduleEvents()
+		service.ScheduleEvents()
 		c.Status(http.StatusOK)
 	} else {
 		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})

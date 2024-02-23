@@ -20,7 +20,7 @@ func main() {
 		panic(tgErr)
 	}
 	// Init database and read events
-	_, dbErr := service.LoadAndScheduleEvents()
+	_, dbErr := service.ScheduleEvents()
 	if dbErr != nil {
 		panic(dbErr)
 	}
@@ -33,8 +33,8 @@ func main() {
 	router.DELETE("/events/delete/:id", controller.EventDelete)
 
 	router.GET("/prompts/view", controller.PromptView)
-	router.POST("/prompts/create", controller.EventCreate)
-	router.DELETE("/prompts/delete/:id", controller.EventDelete)
+	router.POST("/prompts/create", controller.PromptCreate)
+	router.DELETE("/prompts/delete/:id", controller.PromptDelete)
 
 	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)
 	srvErr := router.Run(serverAddress)
