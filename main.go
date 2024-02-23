@@ -31,6 +31,11 @@ func main() {
 	router.POST("/events/create", controller.EventCreate)
 	router.PUT("/events/update/:id", controller.EventUpdate)
 	router.DELETE("/events/delete/:id", controller.EventDelete)
+
+	router.GET("/prompts/view", controller.PromptView)
+	router.POST("/prompts/create", controller.EventCreate)
+	router.DELETE("/prompts/delete/:id", controller.EventDelete)
+
 	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)
 	srvErr := router.Run(serverAddress)
 	if srvErr != nil {

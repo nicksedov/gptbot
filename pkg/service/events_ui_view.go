@@ -60,10 +60,10 @@ func GetEventsTabView(offsetParam string) (*view.EventsTabView, error) {
 	if dbErr != nil {
 		return nil, dbErr
 	}
-	promptParamViews := make([]view.PromptParamView, len(*promptParams))
+	promptParamViews := make([]view.EventPromptParam, len(*promptParams))
 	for i, promptParamItem := range *promptParams {
-		promptParamViews[i] = view.PromptParamView{ID: promptParamItem.ID, PromptID: promptParamItem.PromptID, Title: promptParamItem.Title}
-	} 
+		promptParamViews[i] = view.EventPromptParam{ID: promptParamItem.ID, PromptID: promptParamItem.PromptID, Title: promptParamItem.Title}
+	}
 
 	return &view.EventsTabView{EventViews: eventViews, Prompts: promptItems, PromptParams: promptParamViews, Chats: chatItems}, nil
 }
@@ -91,8 +91,8 @@ func parseOffsetParam(offsetParam string, defaultVal int) (int, bool) {
 	if offsetParam != "" {
 		intOffset, err := strconv.Atoi(offsetParam)
 		if (err == nil) && (intOffset != defaultVal) {
-			return intOffset, true 
+			return intOffset, true
 		}
 	}
-	return defaultVal, false 
+	return defaultVal, false
 }
