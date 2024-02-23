@@ -41,3 +41,10 @@ type NewEventFormView struct {
 	Param2          string     `json:"param_2"`
 	TelegramChatID  uint       `json:"telegramChatId"`
 }
+
+type UpdateEventView struct {
+	Date            string     `json:"date"`
+	Time            string     `json:"time"`
+	TZOffset        int        `json:"tzOffset"` 
+	TelegramChatID  uint       `json:"telegramChatId"`
+}

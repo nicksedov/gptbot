@@ -2,13 +2,14 @@ package service
 
 import (
 	"sort"
+	"strconv"
 	"time"
 
 	"github.com/nicksedov/gptbot/pkg/model"
 	"github.com/nicksedov/gptbot/pkg/view"
 )
 
-func GetEventsTabView() (*view.EventsTabView, error) {
+func GetEventsTabView(offsetParam string) (*view.EventsTabView, error) {
 	events, dbErr := model.GetEvents()
 	if dbErr != nil {
 		return nil, dbErr
@@ -23,7 +24,10 @@ func GetEventsTabView() (*view.EventsTabView, error) {
 	eventOrderMap := make(map[uint]time.Time, len(*events))
 	for _, ev := range *events {
 		evTime := ev.GetTime()
-		tzOffset := ev.TZOffset
+		tzOffset, differentTimeZone := parseOffsetParam(offsetParam, ev.TZOffset)
+		if differentTimeZone {
+			evTime = evTime.In(time.FixedZone("", -tzOffset*60))
+		}
 		prompt, err := ev.GetResolvedPrompt()
 		if err != nil {
 			continue
@@ -81,4 +85,14 @@ func getAsDropdown[T model.IDValue](idValueList *[]T) []view.DropdownItem {
 		listItems[i] = view.DropdownItem{ID: idValue.GetId(), Value: idValue.GetValue()}
 	}
 	return listItems
+}
+
+func parseOffsetParam(offsetParam string, defaultVal int) (int, bool) {
+	if offsetParam != "" {
+		intOffset, err := strconv.Atoi(offsetParam)
+		if (err == nil) && (intOffset != defaultVal) {
+			return intOffset, true 
+		}
+	}
+	return defaultVal, false 
 }

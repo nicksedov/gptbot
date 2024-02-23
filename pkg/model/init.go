@@ -63,6 +63,17 @@ func AddEvent(ev *SingleEvent) error {
 	return nil
 }
 
+func UpdateEvent(ev *SingleEvent) error {
+	db, err := initDb()
+	if err != nil {
+		log.Fatal("failed to connect database")
+		return err
+	}
+	tx := db.Model(&ev).Omit("PromptID").Updates(ev)
+	tx.Commit()
+	return nil
+}
+
 func DeleteEvent(id uint) error {
 	db, err := initDb()
 	if err != nil {

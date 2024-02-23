@@ -10,7 +10,7 @@ import (
 	"gorm.io/datatypes"
 )
 
-func CreateEventFromView(ev *view.NewEventFormView) (*model.SingleEvent, error) {
+func BuildEventFromCreateView(ev *view.NewEventFormView) (*model.SingleEvent, error) {
 	var params *[]model.SingleEventPromptParam = new([]model.SingleEventPromptParam)
 	var event model.SingleEvent
 
@@ -53,6 +53,25 @@ func appendParam(pp *[]model.SingleEventPromptParam, id, value string) (*[]model
 		return &res, nil
 	}
 	return pp, nil
+}
+
+func BuildEventFromUpdateView(id uint, ev *view.UpdateEventView) (*model.SingleEvent, error) {
+	var event model.SingleEvent
+	date, err := time.Parse(time.DateOnly, ev.Date)
+	if err != nil {
+		return nil, err
+	}
+	gormTime := new(datatypes.Time)
+	err = gormTime.Scan(ev.Time)
+	if err != nil {
+		return nil, err
+	}
+	event.ID = id
+	event.Date = datatypes.Date(date)
+	event.Time = *gormTime
+	event.TZOffset = ev.TZOffset
+	event.TelegramChatID = ev.TelegramChatID
+	return &event, nil
 }
 
 func DeleteEvent(id uint64) error {
