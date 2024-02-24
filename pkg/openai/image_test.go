@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/nicksedov/gptbot/pkg/cli"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -12,7 +13,7 @@ var IMAGE_PROMPT_EXAMPLES = [...]string{
 }
 
 func init() {
-	initTestConfiguration()
+	cli.GetFlagsFromFile("../../test_cli_params.yaml")
 }
 
 func TestSendImageRequest(t *testing.T) {

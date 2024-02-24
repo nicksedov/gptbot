@@ -5,16 +5,15 @@ import (
 	"testing"
 
 	"github.com/nicksedov/gptbot/pkg/cli"
-	"github.com/nicksedov/gptbot/pkg/settings"
 	"github.com/stretchr/testify/assert"
 )
 
 var testChatId int64
 
 func init() {
-	cliParams := settings.GetCliParamsFromFile("../../test_cli_params.yaml")
+	cliParams := cli.GetFlagsFromFile("../../test_cli_params.yaml")
 	*cli.FlagBotToken = cliParams.BotToken
-	testChatId = cliParams.TgChatID
+	testChatId = cliParams.ServiceChatID
 }
 
 func TestBotInit(t *testing.T) {
