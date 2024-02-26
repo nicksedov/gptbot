@@ -6,6 +6,6 @@ type ChatsTabView struct {
 
 type ChatView struct {
 	ID        uint    `json:"id"`
-	ChatID    uint    `json:"chatId"`
+	ChatID    int64   `json:"chatId"`
 	ChatName  string  `json:"chatName"`
 }

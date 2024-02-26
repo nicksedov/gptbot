@@ -36,9 +36,13 @@ func main() {
 	router.POST("/prompts/create", controller.PromptCreate)
 	router.DELETE("/prompts/delete/:id", controller.PromptDelete)
 
+	router.GET("/chats/view", controller.ChatView)
+	router.POST("/chats/create", controller.ChatCreate)
+	router.DELETE("/chats/delete/:id", controller.ChatDelete)
+
 	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)
 	srvErr := router.Run(serverAddress)
 	if srvErr != nil {
-		panic(dbErr)
+		panic(srvErr)
 	}
 }
