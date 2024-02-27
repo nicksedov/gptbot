@@ -5,25 +5,15 @@ Web-клиент для GPTBot (серверный компонент).
 
 - Go >= 1.20
 
-## Установка и запуск из командной строки (режим разработки)
+## Установка 
 
 1. git clone git@github.com:nicksedov/gptbot.git
 2. cd gptbot
-3. go build -ldflags="-s -w"
-4. ./gptbot -bot=<*bot_token*> -openai=<*openai_token*> -proxy=<*proxy_host:port*> -proxy.user=<*proxy_user*> -proxy.password=<*proxy_pass*>
+3. 
 
-Параметры прокси опциональны и требуются для успешного доступа к серверам api.openai.com из России, прокси-хост должен географически располагаться за ее пределами. 
-
-## Запуск юнит-тестов
-Для успешного запуска юнит-тестов требуется создание конфигурационного файла `settings.yaml` в директории проекта. Содержимое файла `settings.yaml` см. в разделе "Развертывание в продакшн"
-
-## Развертывание в продакшн
-
-1. cd /opt
-2. mkdir /opt/gptbot-server
-3. mkdir /opt/gptbot-database (если ранее не ставился gptbot-server)
-4. cd /opt/gptbot-server 
-5. mcedit settings.yaml
+## Настройка файла конфигурации
+Параметры прокси опциональны и требуются для успешного доступа к серверам api.openai.com из России, прокси-хост должен географически располагаться за ее пределами.
+Шаблон файла конфигурации 
 ```yaml
 server:
   host: 
@@ -50,6 +40,23 @@ telegram:
   bot_token: ************
   service_chat: 12345678901234
 ```
+## Запуск из командной строки (режим разработки)
+Для запуска требуется предварительно созданный конфигурационный файл `settings.yaml` в директории проекта, рядом с текущим файлом README.md.
+1. go build -ldflags="-s -w"
+2. ./gptbot
+3. В случае нестандартного расположения или названия файла `settings.yaml`: ./gptbot -config=</path/to/settings.xml>
+
+## Запуск юнит-тестов
+Для успешного запуска юнит-тестов также требуется предварительно созданный конфигурационный файл `settings.yaml` в директории проекта, рядом с текущим файлом README.md.
+
+## Развертывание в продакшн
+
+1. cd /opt
+2. mkdir /opt/gptbot-server
+3. mkdir /opt/gptbot-database (если ранее не ставился gptbot-server)
+4. cd /opt/gptbot-server 
+5. mcedit settings.yaml
+
 6. cd /etc/systemd/system
 7. mcedit gptbot-server.service
 ```properties
