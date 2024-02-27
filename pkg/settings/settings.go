@@ -6,12 +6,28 @@ type Settings struct {
 		Port uint   `yaml:"port"`
 	} `yaml:"server"`
 
+	Proxy struct {
+		Host     string `yaml:"host"`
+		Port     uint   `yaml:"port"`
+		User     string `yaml:"user"`
+		Password string `yaml:"password"`
+	} `yaml:"proxy"`
+
 	DbConfig struct {
 		Host     string `yaml:"host"`
 		Port     uint   `yaml:"port"`
-		DbName   string `yaml:"dbname"`
+		DbName   string `yaml:"db_name"`
 		User     string `yaml:"user"`
 		Password string `yaml:"password"`
-		SslMode  string `yaml:"sslmode"` 
+		SSLMode  string `yaml:"ssl_mode"`
 	} `yaml:"database"`
+
+	OpenAI struct {
+		APIToken string `yaml:"api_token"`
+	} `yaml:"openai"`
+
+	Telegram struct {
+		BotToken    string `yaml:"bot_token"`
+		ServiceChat int64  `yaml:"service_chat"`
+	} `yaml:"telegram"`
 }

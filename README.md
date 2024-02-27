@@ -15,15 +15,8 @@ Web-клиент для GPTBot (серверный компонент).
 Параметры прокси опциональны и требуются для успешного доступа к серверам api.openai.com из России, прокси-хост должен географически располагаться за ее пределами. 
 
 ## Запуск юнит-тестов
-Для успешного запуска юнит-тестов требуется создание конфигурационного файла `test_cli_params.yaml` в директории проекта.
-```yaml
-Proxy: <proxy_host:port>
-ProxyUser: <proxy_user>
-ProxyPassword: <proxy_pass>
-BotToken: <bot_token>
-OpenAIToken: <openai_token>
-TelegramChatID: <test_chat_id>
-```
+Для успешного запуска юнит-тестов требуется создание конфигурационного файла `settings.yaml` в директории проекта. Содержимое файла `settings.yaml` см. в разделе "Развертывание в продакшн"
+
 ## Развертывание в продакшн
 
 1. cd /opt
@@ -34,10 +27,28 @@ TelegramChatID: <test_chat_id>
 ```yaml
 server:
   host: 
-  port: 3445
+  port: 5443
 
+proxy:
+  host: proxy.com
+  port: 9999
+  user: username
+  password: ********
+  
 database:
-  path: /opt/gptbot-database/calendar.sqlite
+  host:     localhost
+  port:     5432
+  db_name:  gptbot
+  user:     postgres
+  password: ********
+  ssl_mode: disable
+
+openai:
+  api_token: ************
+  
+telegram:
+  bot_token: ************
+  service_chat: 12345678901234
 ```
 6. cd /etc/systemd/system
 7. mcedit gptbot-server.service

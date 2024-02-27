@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/nicksedov/gptbot/pkg/cli"
+	"github.com/nicksedov/gptbot/pkg/settings"
 )
 
 const (
@@ -19,13 +19,14 @@ const (
 var httpClient *http.Client
 
 func GetClient() *http.Client {
+	settings := settings.GetSettings()
 	if httpClient == nil {
 		transport := &http.Transport{}
-		if *cli.Proxy != "" {
+		if settings.Proxy.Host != "" {
 			proxyUrl := &url.URL{
 				Scheme: "http",
-				User:   url.UserPassword(*cli.ProxyUser, *cli.ProxyPassword),
-				Host:   *cli.Proxy,
+				User:   url.UserPassword(settings.Proxy.User, settings.Proxy.Password),
+				Host:   settings.Proxy.Host + ":" + fmt.Sprint(settings.Proxy.Port),
 			}
 			transport.Proxy = http.ProxyURL(proxyUrl) // set proxy
 		}
@@ -35,19 +36,20 @@ func GetClient() *http.Client {
 }
 
 func DoGet(api string) (*http.Response, error) {
-
+	
 	url, err := url.JoinPath(BASE_URL, api)
 	if err != nil {
 		return handleError("Wrong API name format", err)
 	}
 
-	token := *cli.FlagOpenAIToken
+	settings := settings.GetSettings()
+	token := settings.OpenAI.APIToken
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return handleError("Error building OpenAI HTTP request", err)
 	}
 	request.Header.Set("Accept", "application/json")
-	request.Header.Set("Authorization", "Bearer "+token)
+	request.Header.Set("Authorization", "Bearer " + token)
 	client := GetClient()
 	response, err := client.Do(request)
 	if err != nil {
@@ -69,7 +71,8 @@ func DoPost(api string, jsonData any) (*http.Response, error) {
 		return handleError("Wrong API name format", err)
 	}
 
-	token := *cli.FlagOpenAIToken
+	settings := settings.GetSettings()
+	token := settings.OpenAI.APIToken
 	request, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBody))
 	if err != nil {
 		return handleError("Error building OpenAI HTTP request", err)

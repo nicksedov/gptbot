@@ -12,7 +12,7 @@ const TEST_CHAT_ID int64 = 5093432423
 const CHAT_PROMPT string = "Hello buddy!"
 
 func init() {
-	cli.GetFlagsFromFile("../../test_cli_params.yaml")
+	*cli.FlagConfig = "../../settings.yaml"
 }
 
 func TestSendRequest(t *testing.T) {

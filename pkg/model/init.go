@@ -16,13 +16,13 @@ func initDb() (*gorm.DB, error) {
 	if db == nil {
 		dbConfig := settings.GetSettings().DbConfig
 		dsnFormat := "host=%s port=%d dbname=%s user=%s password=%s sslmode=%s"
-		dsn := fmt.Sprintf(dsnFormat, 
-			dbConfig.Host, dbConfig.Port, dbConfig.DbName, dbConfig.User, dbConfig.Password, dbConfig.SslMode) 
+		dsn := fmt.Sprintf(dsnFormat,
+			dbConfig.Host, dbConfig.Port, dbConfig.DbName, dbConfig.User, dbConfig.Password, dbConfig.SSLMode)
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		db.AutoMigrate(
-			&Prompt{}, 
-			&PromptParam{}, 
-			&SingleEvent{}, 
+			&Prompt{},
+			&PromptParam{},
+			&SingleEvent{},
 			&SingleEventPromptParam{},
 			&TelegramChat{})
 	}
@@ -38,8 +38,7 @@ func read[T any](selector func(items *[]T, db *gorm.DB)) (*[]T, error) {
 	items := new([]T)
 	selector(items, db)
 	return items, nil
-} 
-
+}
 
 func GetAll[T any]() (*[]T, error) {
 	selectAll := func(items *[]T, db *gorm.DB) {

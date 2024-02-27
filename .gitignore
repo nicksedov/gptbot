@@ -8,7 +8,6 @@ vendor
 gptbot
 gptbot.exe
 deploy.sh
-__debug_*
+__*
 
 settings.yaml
-test_cli_params.yaml

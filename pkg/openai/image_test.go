@@ -13,7 +13,7 @@ var IMAGE_PROMPT_EXAMPLES = [...]string{
 }
 
 func init() {
-	cli.GetFlagsFromFile("../../test_cli_params.yaml")
+	*cli.FlagConfig = "../../settings.yaml"
 }
 
 func TestSendImageRequest(t *testing.T) {
