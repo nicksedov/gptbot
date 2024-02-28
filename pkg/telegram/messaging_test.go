@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	*cli.FlagConfig = "../../settings.yaml"
+	*cli.FlagConfig = "../../settings-test.yaml"
 }
 
 func TestBotInit(t *testing.T) {

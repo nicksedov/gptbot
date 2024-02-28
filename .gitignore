@@ -10,4 +10,4 @@ gptbot.exe
 deploy.sh
 __*
 
-settings.yaml
+settings*.yaml

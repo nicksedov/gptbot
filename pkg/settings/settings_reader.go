@@ -1,9 +1,9 @@
 package settings
 
 /*
- * Reading and initializing settings from file on service startup (default name 'gptbot-settings.yaml')
+ * Reading and initializing settings from file on service startup (default name 'settings.yaml')
  * Including:
- *  - SQLite database settings
+ *  - PostgreSQL database settings
  *  - Telegram connection settings
  */
 import (
