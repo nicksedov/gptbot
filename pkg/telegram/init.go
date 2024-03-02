@@ -7,9 +7,7 @@ import (
 	"github.com/nicksedov/gptbot/pkg/settings"
 )
 
-var (
-	bot *tgbotapi.BotAPI
-)
+var bot *tgbotapi.BotAPI
 
 func GetBot() (*tgbotapi.BotAPI, error) {
 	if bot == nil {

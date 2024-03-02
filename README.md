@@ -17,7 +17,7 @@ Web-клиент для GPTBot (серверный компонент).
 ```yaml
 server:
   host: 
-  port: 5443
+  port: 3445
 
 proxy:
   host: proxy.com
@@ -35,10 +35,18 @@ database:
 
 openai:
   api_token: ************
+  model: gpt-3.5-turbo-0125
   
 telegram:
   bot_token: ************
   service_chat: 12345678901234
+
+logger:
+  filename:   /var/log/gptbot/gptbot.log 
+  maxsize:    10
+  maxbackups: 10
+  maxage:     30
+  compress:   true
 ```
 ## Запуск из командной строки (режим разработки)
 Для запуска требуется предварительно созданный конфигурационный файл `settings.yaml` в директории проекта, рядом с текущим файлом README.md.

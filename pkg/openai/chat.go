@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
+
+	"github.com/nicksedov/gptbot/pkg/settings"
 )
 
 var history map[int64][]Messages = make(map[int64][]Messages)
@@ -13,14 +16,13 @@ func SendRequest(chatId int64, prompt string) *ChatResponse {
 	reqData := prepareRequest(chatId, prompt)
 	response, error := DoPost(CHAT_API, reqData)
 	if error != nil {
-		panic(error)
+		log.Panicf("API call error: POST %s\n  Reason: %s", CHAT_API, error.Error())
 	}
 
 	defer response.Body.Close()
 	body, error := io.ReadAll(response.Body)
 	if error != nil {
-		fmt.Printf("Error processing OpenAI API response: %s", error)
-		panic(error)
+		log.Panicf("Error processing OpenAI API response: POST %s\n  Reason: %s", CHAT_API, error.Error())
 	}
 	resp := &ChatResponse{}
 	error = json.Unmarshal(body, resp)
@@ -46,7 +48,7 @@ func updateHistory(chatId int64, role string, content string) {
 func prepareRequest(chatId int64, content string) *ChatRequest {
 	updateHistory(chatId, "user", content)
 	req := ChatRequest{
-		Model:    "gpt-3.5-turbo-0125",
+		Model:    settings.GetSettings().OpenAI.Model,
 		Messages: history[chatId],
 	}
 	return &req

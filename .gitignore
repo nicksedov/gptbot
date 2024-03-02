@@ -7,6 +7,7 @@ vendor
 # go executable built file
 gptbot
 gptbot.exe
+gptbot.log
 deploy.sh
 __*
 

@@ -1,6 +1,8 @@
 package telegram
 
 import (
+	"encoding/json"
+	"log"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -19,13 +21,16 @@ func updatesListener(updates tgbotapi.UpdatesChannel) {
 }
 
 func handleMessage(message *tgbotapi.Message) {
+	logMessage(message)
 	text := message.Text
 	chatId := message.Chat.ID
 	if chatId == 0 {
 		return
 	}
 	text = strings.TrimSpace(text)
-	processChat(chatId, text)
+	if text != "" {
+		processChat(chatId, text)
+	}
 }
 
 func processChat(chatId int64, prompt string) {
@@ -34,4 +39,9 @@ func processChat(chatId int64, prompt string) {
 		msg := tgbotapi.NewMessage(chatId, resp.Choices[0].Message.Content)
 		bot.Send(msg)
 	}
+}
+
+func logMessage(message *tgbotapi.Message) {
+	content, _ := json.MarshalIndent(message, " > ", "  ")
+	log.Printf("New message received:\n > %s", string(content)) 
 }

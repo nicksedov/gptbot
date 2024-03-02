@@ -1,5 +1,7 @@
 package settings
 
+import "gopkg.in/natefinch/lumberjack.v2"
+
 type Settings struct {
 	Server struct {
 		Host string `yaml:"host"`
@@ -24,10 +26,13 @@ type Settings struct {
 
 	OpenAI struct {
 		APIToken string `yaml:"api_token"`
+		Model    string `yaml:"model"`
 	} `yaml:"openai"`
 
 	Telegram struct {
 		BotToken    string `yaml:"bot_token"`
 		ServiceChat int64  `yaml:"service_chat"`
 	} `yaml:"telegram"`
+
+	Logger lumberjack.Logger  `yaml:"logger"`
 }

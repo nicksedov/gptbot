@@ -3,29 +3,33 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/nicksedov/gptbot/pkg/controller"
+	"github.com/nicksedov/gptbot/pkg/logger"
 	"github.com/nicksedov/gptbot/pkg/service"
 	"github.com/nicksedov/gptbot/pkg/settings"
 	"github.com/nicksedov/gptbot/pkg/telegram"
 )
 
 func main() {
+	// Set up config file path from command line parameter (or set default path)
 	flag.Parse()
+	logger.InitLog()
+
 	// Init telegram bot
 	_, tgErr := telegram.GetBot()
 	if tgErr != nil {
-		panic(tgErr)
+		log.Fatalf("Error initializing telegram bot:\n  %s", tgErr.Error())
 	}
 	// Init database and read events
 	_, dbErr := service.ScheduleEvents()
 	if dbErr != nil {
-		panic(dbErr)
+		log.Fatalf("Error initializing database connection:\n  %s", dbErr.Error())
 	}
 	// Init HTTP server
-	settings := settings.GetSettings()
 	router := gin.Default()
 	router.GET("/events/view", controller.EventView)
 	router.POST("/events/create", controller.EventCreate)
@@ -40,9 +44,10 @@ func main() {
 	router.POST("/chats/create", controller.ChatCreate)
 	router.DELETE("/chats/delete/:id", controller.ChatDelete)
 
+	settings := settings.GetSettings()
 	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)
 	srvErr := router.Run(serverAddress)
 	if srvErr != nil {
-		panic(srvErr)
+		log.Fatalf("Error initializing HTTP server:\n  %s", srvErr.Error())
 	}
 }

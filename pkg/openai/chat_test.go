@@ -19,11 +19,8 @@ func TestSendRequest(t *testing.T) {
 	resp := SendRequest(TEST_CHAT_ID, CHAT_PROMPT)
 	fmt.Printf("Response ID is %s\n", resp.ID)
 	choices := resp.Choices
-	if len(choices) > 0 {
-		fmt.Printf("%s answered:\n - %s", choices[0].Message.Role, choices[0].Message.Content)
-	} else {
-		fmt.Println("Test failed")
-	}
+	assert.LessOrEqual(t, 1, len(choices))
+	fmt.Printf("%s answered:\n - %s", choices[0].Message.Role, choices[0].Message.Content)
 	
 	var testHist []Messages = history[TEST_CHAT_ID]
 	assert.NotNil(t, testHist)
