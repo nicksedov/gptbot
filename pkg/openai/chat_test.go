@@ -9,7 +9,7 @@ import (
 )
 
 const TEST_CHAT_ID int64 = 5093432423
-const CHAT_PROMPT string = "Hello buddy!"
+const CHAT_PROMPT string = "Представь себя команде"
 
 func init() {
 	*cli.FlagConfig = "../../settings-test.yaml"

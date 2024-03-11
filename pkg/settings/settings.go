@@ -27,6 +27,9 @@ type Settings struct {
 	OpenAI struct {
 		APIToken string `yaml:"api_token"`
 		Model    string `yaml:"model"`
+		Completions struct {
+			Context string `yaml:"context"`
+		} `yaml:"completions"`
 	} `yaml:"openai"`
 
 	Telegram struct {

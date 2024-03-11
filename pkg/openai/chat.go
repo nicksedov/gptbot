@@ -47,9 +47,18 @@ func updateHistory(chatId int64, role string, content string) {
 
 func prepareRequest(chatId int64, content string) *ChatRequest {
 	updateHistory(chatId, "user", content)
+	var messages []Messages
+	contextDescription := settings.GetSettings().OpenAI.Completions.Context
+	if contextDescription != "" {
+		messages = make([]Messages, 0, len(history[chatId]) + 1)
+		messages = append(messages, Messages{Role: "system", Content: contextDescription})
+		messages = append(messages, history[chatId]...)
+	} else {
+		messages = history[chatId]
+	}
 	req := ChatRequest{
 		Model:    settings.GetSettings().OpenAI.Model,
-		Messages: history[chatId],
+		Messages: messages,
 	}
 	return &req
 }
