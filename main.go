@@ -35,6 +35,7 @@ func main() {
 	router.POST("/events/create", controller.EventCreate)
 	router.PUT("/events/update/:id", controller.EventUpdate)
 	router.DELETE("/events/delete/:id", controller.EventDelete)
+	router.DELETE("/events/delete/expired", controller.EventDeleteExpired)
 
 	router.GET("/prompts/view", controller.PromptView)
 	router.POST("/prompts/create", controller.PromptCreate)

@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nicksedov/gptbot/pkg/model"
@@ -48,6 +49,19 @@ func EventDelete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 0, 0)
 	if err == nil {
 		err = model.DeleteEvent(uint(id))
+	}
+	onEventsChanged(c, err)
+}
+
+func EventDeleteExpired(c *gin.Context) {
+	events, err := model.ReadEvents()
+	if err == nil {
+		now := time.Now()
+		for _, ev := range (*events) {
+			if ev.GetTime().Before(now) {
+				model.DeleteEvent(ev.ID)
+			}
+		}
 	}
 	onEventsChanged(c, err)
 }
