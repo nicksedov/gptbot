@@ -1,19 +1,24 @@
 package service
 
 import (
+	"strconv"
+
 	"github.com/nicksedov/gptbot/pkg/model"
 	"github.com/nicksedov/gptbot/pkg/view"
 )
 
-func GetPromptsTabView() (*view.PromptsTabView, error) {
+func GetPromptsTabView(filter string) (*view.PromptsTabView, error) {
 
 	prompts, dbErr := model.GetAll[model.Prompt]()
 	if dbErr != nil {
 		return nil, dbErr
 	}
+	promptId, filterErr := strconv.Atoi(filter)
+	showFiltered := (filterErr == nil)
 	promptsMap := make(map[uint]*view.PromptView, len(*prompts))
 	for _, prompt := range *prompts {
-		promptView := view.PromptView{ID: prompt.ID, Title: prompt.Title, Prompt: prompt.Prompt, AltText: prompt.AltText}
+		hidden := showFiltered && (prompt.ID != uint(promptId))
+		promptView := view.PromptView{ID: prompt.ID, Title: prompt.Title, Prompt: prompt.Prompt, AltText: prompt.AltText, Hidden: hidden}
 		promptsMap[prompt.ID] = &promptView
 	}
 

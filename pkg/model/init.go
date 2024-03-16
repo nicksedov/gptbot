@@ -42,7 +42,7 @@ func read[T any](selector func(items *[]T, db *gorm.DB)) (*[]T, error) {
 
 func GetAll[T any]() (*[]T, error) {
 	selectAll := func(items *[]T, db *gorm.DB) {
-		db.Find(items)
+		db.Order("id").Find(items)
 	}
 	return read(selectAll)
 }

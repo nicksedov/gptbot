@@ -11,7 +11,8 @@ import (
 )
 
 func PromptView(c *gin.Context) {
-	promtsTab, err := service.GetPromptsTabView()
+	var filter string = c.Query("filter")
+	promtsTab, err := service.GetPromptsTabView(filter)
 	if err == nil {
 		c.JSON(http.StatusOK, promtsTab)
 	} else {

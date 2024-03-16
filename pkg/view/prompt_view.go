@@ -9,6 +9,7 @@ type PromptView struct {
 	Title        string        `json:"title"`
 	Prompt       string        `json:"prompt"`
 	AltText      string        `json:"altText"`
+	Hidden       bool          `json:"hidden"`
 	PromptParams []PromptParam `json:"prompt_params"`
 }
 
