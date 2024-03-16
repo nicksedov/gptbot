@@ -9,7 +9,7 @@ import (
 	"github.com/nicksedov/gptbot/pkg/view"
 )
 
-func GetEventsTabView(offsetParam string) (*view.EventsTabView, error) {
+func GetEventsTabView(offsetParam string, filter string) (*view.EventsTabView, error) {
 	events, dbErr := model.ReadEvents()
 	if dbErr != nil {
 		return nil, dbErr
@@ -24,6 +24,9 @@ func GetEventsTabView(offsetParam string) (*view.EventsTabView, error) {
 	eventOrderMap := make(map[uint]time.Time, len(*events))
 	for _, ev := range *events {
 		evTime := ev.GetTime()
+		if (!timeFilterPredicate(evTime, filter)) {
+			continue
+		}
 		tzOffset, differentTimeZone := parseOffsetParam(offsetParam, ev.TZOffset)
 		if differentTimeZone {
 			evTime = evTime.In(time.FixedZone("", -tzOffset*60))
@@ -68,6 +71,17 @@ func GetEventsTabView(offsetParam string) (*view.EventsTabView, error) {
 	return &view.EventsTabView{EventViews: eventViews, Prompts: promptItems, PromptParams: promptParamViews, Chats: chatItems}, nil
 }
 
+func timeFilterPredicate(evTime time.Time, filter string) bool {
+	currentTime := time.Now()
+	switch filter {
+		case "past": return evTime.Before(currentTime)
+		case "future": return evTime.After(currentTime)
+		case "today": return isToday(evTime)
+		case "tomorrow": return isToday(evTime.Add(-24 * time.Duration(time.Hour)))
+		default: return true
+	}
+}
+
 func orderIDsByTime(idByTimeMap map[uint]time.Time) []uint {
 	keys := make([]uint, 0, len(idByTimeMap))
 	for key := range idByTimeMap {
@@ -95,4 +109,10 @@ func parseOffsetParam(offsetParam string, defaultVal int) (int, bool) {
 		}
 	}
 	return defaultVal, false
+}
+
+func isToday(evTime time.Time) bool {
+	now := time.Now()
+	localTime := evTime.In(time.Local)
+	return (localTime.Year() == now.Year()) && (localTime.Month() == now.Month()) && (localTime.Day() == now.Day())
 }

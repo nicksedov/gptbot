@@ -13,7 +13,8 @@ import (
 
 func EventView(c *gin.Context) {
 	var tzOffset string = c.Query("tzoffset")
-	eventsTab, err := service.GetEventsTabView(tzOffset)
+	var filter string = c.Query("filter")
+	eventsTab, err := service.GetEventsTabView(tzOffset, filter)
 	if err == nil {
 		c.JSON(http.StatusOK, eventsTab)
 	} else {
