@@ -58,7 +58,7 @@ func EventDeleteExpired(c *gin.Context) {
 	events, err := model.ReadEvents()
 	if err == nil {
 		now := time.Now()
-		for _, ev := range (*events) {
+		for _, ev := range *events {
 			if ev.GetTime().Before(now) {
 				model.DeleteEvent(ev.ID)
 			}
