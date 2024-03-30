@@ -1,9 +1,9 @@
 package scheduler
 
 import (
-	"github.com/nicksedov/gptbot/pkg/model"
-	"github.com/nicksedov/gptbot/pkg/openai"
-	"github.com/nicksedov/gptbot/pkg/telegram"
+	"gptbot/pkg/model"
+	"gptbot/pkg/openai"
+	"gptbot/pkg/telegram"
 )
 
 type GptChatEventHandler struct{}

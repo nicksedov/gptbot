@@ -1,4 +1,4 @@
-module github.com/nicksedov/gptbot
+module gptbot
 
 go 1.21.4
 

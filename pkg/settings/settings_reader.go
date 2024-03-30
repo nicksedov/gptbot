@@ -11,8 +11,9 @@ import (
 	"os"
 	"strings"
 
+	"gptbot/pkg/cli"
+
 	"github.com/go-yaml/yaml"
-	"github.com/nicksedov/gptbot/pkg/cli"
 )
 
 var settings *Settings

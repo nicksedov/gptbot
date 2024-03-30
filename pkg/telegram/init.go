@@ -3,8 +3,9 @@ package telegram
 import (
 	"fmt"
 
+	"gptbot/pkg/settings"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/nicksedov/gptbot/pkg/settings"
 )
 
 var bot *tgbotapi.BotAPI

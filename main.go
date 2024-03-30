@@ -7,11 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/nicksedov/gptbot/pkg/controller"
-	"github.com/nicksedov/gptbot/pkg/logger"
-	"github.com/nicksedov/gptbot/pkg/service"
-	"github.com/nicksedov/gptbot/pkg/settings"
-	"github.com/nicksedov/gptbot/pkg/telegram"
+	"gptbot/pkg/controller"
+	"gptbot/pkg/logger"
+	"gptbot/pkg/service"
+	"gptbot/pkg/settings"
+	"gptbot/pkg/telegram"
 )
 
 func main() {

@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/nicksedov/gptbot/pkg/cli"
+	"gptbot/pkg/cli"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -25,7 +26,7 @@ func TestSendImageRequest(t *testing.T) {
 	// Run test method
 	resp := SendImageRequest(DALLE_2, DALLE_2_MID, expectedNum, prompt)
 
-	// Perform test checks 
+	// Perform test checks
 	assert.NotNil(t, resp)
 	actualData := resp.Data
 	assert.Equal(t, "200 OK", resp.HttpStatusMessage)

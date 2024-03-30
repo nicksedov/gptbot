@@ -5,8 +5,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/nicksedov/gptbot/pkg/model"
-	"github.com/nicksedov/gptbot/pkg/view"
+	"gptbot/pkg/model"
+	"gptbot/pkg/view"
+
 	"gorm.io/datatypes"
 )
 

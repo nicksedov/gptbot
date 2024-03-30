@@ -3,8 +3,8 @@ package service
 import (
 	"strconv"
 
-	"github.com/nicksedov/gptbot/pkg/model"
-	"github.com/nicksedov/gptbot/pkg/view"
+	"gptbot/pkg/model"
+	"gptbot/pkg/view"
 )
 
 func GetPromptsTabView(filter string) (*view.PromptsTabView, error) {

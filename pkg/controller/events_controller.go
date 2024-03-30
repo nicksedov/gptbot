@@ -5,10 +5,11 @@ import (
 	"strconv"
 	"time"
 
+	"gptbot/pkg/model"
+	"gptbot/pkg/service"
+	"gptbot/pkg/view"
+
 	"github.com/gin-gonic/gin"
-	"github.com/nicksedov/gptbot/pkg/model"
-	"github.com/nicksedov/gptbot/pkg/service"
-	"github.com/nicksedov/gptbot/pkg/view"
 )
 
 func EventView(c *gin.Context) {

@@ -4,12 +4,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nicksedov/gptbot/pkg/model"
+	"gptbot/pkg/model"
+
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSchedule(t *testing.T) {
-	
+
 	var handler *TestEventHandler = &TestEventHandler{}
 	handler.triggerTime = time.Now()
 
@@ -18,7 +19,7 @@ func TestSchedule(t *testing.T) {
 	eventsInterval := 100 * time.Millisecond
 	// Expected that last event will be fired after given amount of time
 	expectedCompletionTime := time.Duration(int64(eventsInterval) * int64(eventsToSchedule))
-	
+
 	// Create events in the future
 	var events []model.SingleEvent
 	for i := 1; i <= eventsToSchedule; i++ {
@@ -37,14 +38,14 @@ func TestSchedule(t *testing.T) {
 	// Evaluate real duration and compare with expected
 	actualTime := handler.fireTime.Sub(handler.triggerTime)
 	assert.GreaterOrEqual(t, actualTime, expectedCompletionTime)
-	assert.LessOrEqual(t, actualTime, expectedCompletionTime + overlapTime)
+	assert.LessOrEqual(t, actualTime, expectedCompletionTime+overlapTime)
 	assert.Equal(t, eventsToSchedule, handler.fireCount)
 }
 
-type TestEventHandler struct { 
+type TestEventHandler struct {
 	triggerTime time.Time
-	fireTime time.Time
-	fireCount int
+	fireTime    time.Time
+	fireCount   int
 }
 
 func (h *TestEventHandler) handle(t *model.SingleEvent) error {

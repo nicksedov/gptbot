@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/nicksedov/gptbot/pkg/model"
-	"github.com/nicksedov/gptbot/pkg/view"
+	"gptbot/pkg/model"
+	"gptbot/pkg/view"
 )
 
 func GetEventsTabView(offsetParam string, filter string) (*view.EventsTabView, error) {
@@ -24,7 +24,7 @@ func GetEventsTabView(offsetParam string, filter string) (*view.EventsTabView, e
 	eventOrderMap := make(map[uint]time.Time, len(*events))
 	for _, ev := range *events {
 		evTime := ev.GetTime()
-		if (!timeFilterPredicate(evTime, filter)) {
+		if !timeFilterPredicate(evTime, filter) {
 			continue
 		}
 		tzOffset, differentTimeZone := parseOffsetParam(offsetParam, ev.TZOffset)
@@ -74,11 +74,16 @@ func GetEventsTabView(offsetParam string, filter string) (*view.EventsTabView, e
 func timeFilterPredicate(evTime time.Time, filter string) bool {
 	currentTime := time.Now()
 	switch filter {
-		case "past": return evTime.Before(currentTime)
-		case "future": return evTime.After(currentTime)
-		case "today": return isToday(evTime)
-		case "tomorrow": return isToday(evTime.Add(-24 * time.Duration(time.Hour)))
-		default: return true
+	case "past":
+		return evTime.Before(currentTime)
+	case "future":
+		return evTime.After(currentTime)
+	case "today":
+		return isToday(evTime)
+	case "tomorrow":
+		return isToday(evTime.Add(-24 * time.Duration(time.Hour)))
+	default:
+		return true
 	}
 }
 

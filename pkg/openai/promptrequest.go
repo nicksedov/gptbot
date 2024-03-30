@@ -1,6 +1,6 @@
 package openai
 
-import "github.com/nicksedov/gptbot/pkg/model"
+import "gptbot/pkg/model"
 
 func GetMessageByPrompt(e *model.SingleEvent) string {
 	prompt, err := e.GetResolvedPrompt()

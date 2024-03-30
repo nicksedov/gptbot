@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/nicksedov/gptbot/pkg/settings"
+	"gptbot/pkg/settings"
 )
 
 const (
@@ -36,7 +36,7 @@ func GetClient() *http.Client {
 }
 
 func DoGet(api string) (*http.Response, error) {
-	
+
 	url, err := url.JoinPath(BASE_URL, api)
 	if err != nil {
 		return handleError("Wrong API name format", err)
@@ -49,7 +49,7 @@ func DoGet(api string) (*http.Response, error) {
 		return handleError("Error building OpenAI HTTP request", err)
 	}
 	request.Header.Set("Accept", "application/json")
-	request.Header.Set("Authorization", "Bearer " + token)
+	request.Header.Set("Authorization", "Bearer "+token)
 	client := GetClient()
 	response, err := client.Do(request)
 	if err != nil {

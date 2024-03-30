@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/nicksedov/gptbot/pkg/cli"
+	"gptbot/pkg/cli"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,7 +22,7 @@ func TestSendRequest(t *testing.T) {
 	choices := resp.Choices
 	assert.LessOrEqual(t, 1, len(choices))
 	fmt.Printf("%s answered:\n - %s", choices[0].Message.Role, choices[0].Message.Content)
-	
+
 	var testHist []Messages = history[TEST_CHAT_ID]
 	assert.NotNil(t, testHist)
 	assert.Equal(t, 2, len(testHist))

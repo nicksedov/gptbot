@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nicksedov/gptbot/pkg/settings"
+	"gptbot/pkg/settings"
 )
 
 func InitLog() {

@@ -5,8 +5,9 @@ import (
 	"log"
 	"strings"
 
+	"gptbot/pkg/openai"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/nicksedov/gptbot/pkg/openai"
 )
 
 func updatesListener(updates tgbotapi.UpdatesChannel) {
@@ -43,5 +44,5 @@ func processChat(chatId int64, prompt string) {
 
 func logMessage(message *tgbotapi.Message) {
 	content, _ := json.MarshalIndent(message, " > ", "  ")
-	log.Printf("New message received:\n > %s", string(content)) 
+	log.Printf("New message received:\n > %s", string(content))
 }

@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/nicksedov/gptbot/pkg/cli"
-	"github.com/nicksedov/gptbot/pkg/settings"
+	"gptbot/pkg/cli"
+	"gptbot/pkg/settings"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,7 +19,7 @@ func TestBotInit(t *testing.T) {
 	testChatId := settings.Telegram.ServiceChat
 	assert.NotEqual(t, 0, testChatId)
 	bot, err := GetBot()
-	assert.Nil(t, err)	
+	assert.Nil(t, err)
 	assert.NotNil(t, bot)
 	assert.Equal(t, bot.Token, settings.Telegram.BotToken)
 }

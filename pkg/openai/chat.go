@@ -6,7 +6,7 @@ import (
 	"io"
 	"log"
 
-	"github.com/nicksedov/gptbot/pkg/settings"
+	"gptbot/pkg/settings"
 )
 
 var history map[int64][]Messages = make(map[int64][]Messages)
@@ -50,7 +50,7 @@ func prepareRequest(chatId int64, content string) *ChatRequest {
 	var messages []Messages
 	contextDescription := settings.GetSettings().OpenAI.Completions.Context
 	if contextDescription != "" {
-		messages = make([]Messages, 0, len(history[chatId]) + 1)
+		messages = make([]Messages, 0, len(history[chatId])+1)
 		messages = append(messages, Messages{Role: "system", Content: contextDescription})
 		messages = append(messages, history[chatId]...)
 	} else {

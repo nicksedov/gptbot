@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/nicksedov/gptbot/pkg/model"
-	"github.com/nicksedov/gptbot/pkg/scheduler"
+	"gptbot/pkg/model"
+	"gptbot/pkg/scheduler"
 )
 
 func ScheduleEvents() (*[]model.SingleEvent, error) {

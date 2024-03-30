@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/nicksedov/gptbot/pkg/settings"
+	"gptbot/pkg/settings"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
