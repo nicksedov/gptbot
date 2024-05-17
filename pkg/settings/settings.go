@@ -32,6 +32,11 @@ type Settings struct {
 		} `yaml:"completions"`
 	} `yaml:"openai"`
 
+	GigaChat struct {
+		ClientID      string `yaml:"client_id"`
+		ClientSecret  string `yaml:"client_secret"`
+	}  `yaml:"gigachat"`
+
 	Telegram struct {
 		BotToken    string `yaml:"bot_token"`
 		ServiceChat int64  `yaml:"service_chat"`
