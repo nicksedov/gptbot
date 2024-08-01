@@ -13,3 +13,5 @@ __*
 
 settings*.yaml
 *.jsonl
+
+*.crt

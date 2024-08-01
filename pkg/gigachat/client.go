@@ -3,10 +3,13 @@ package gigachat
 import (
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 	"encoding/base64"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -62,10 +65,26 @@ func NewInsecureClient(clientId string, clientSecret string) (*Client, error) {
 func NewClientWithConfig(config *Config) (*Client, error) {
 	var customTransport *http.Transport
 
+	if dt, ok := http.DefaultTransport.(*http.Transport); ok {
+		customTransport = dt.Clone()
+	}
 	if config.Insecure {
-		if dt, ok := http.DefaultTransport.(*http.Transport); ok {
-			customTransport = dt.Clone()
-			customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	} else {
+		f := "../../russian_trusted_root_ca_pem.crt"
+		r, _ := os.ReadFile(f)
+		block1, _ := pem.Decode(r)
+		rootCert, _ := x509.ParseCertificate(block1.Bytes)
+		f = "../../russian_trusted_sub_ca_pem.crt"
+		r, _ = os.ReadFile(f)
+		block2, _ := pem.Decode(r)
+		caCert, _ := x509.ParseCertificate(block2.Bytes)
+		pool := x509.NewCertPool()
+		pool.AddCert(rootCert)
+		pool.AddCert(caCert)
+		customTransport.TLSClientConfig = &tls.Config{
+			InsecureSkipVerify: false,
+			RootCAs: pool,
 		}
 	}
 

@@ -15,9 +15,11 @@ func GetClient() *Client {
 	var err error
 	if client == nil {
 		settings := settings.GetSettings()
-		client, err = NewInsecureClient(settings.GigaChat.ClientID, settings.GigaChat.ClientSecret)
+		client, err = NewClient(settings.GigaChat.Auth.ClientID, settings.GigaChat.Auth.ClientSecret)
 		if err != nil {
 			log.Panicln("GigaChat connection error", err)
+		} else {
+			log.Printf("GigaChat client initialized for Client ID = %s\n", client.config.ClientId)
 		}
 	}
 	err = authCheck()
@@ -38,7 +40,11 @@ func SendRequest(chatId int64, prompt string) *ChatResponse {
 }
 
 func authCheck() error {
-	if client == nil || client.token == nil || time.Until(client.token.expiresAt) < time.Second * 10 {
+	if client.token == nil {
+		log.Printf("Issuing access token for GigaChat client; Client ID = %s\n", client.config.ClientId)
+		return client.Auth()
+	} else if time.Until(client.token.expiresAt) < time.Second * 15 {
+		log.Printf("Re-issuing access token for GigaChat client due to expiration; Client ID = %s\n", client.config.ClientId)
 		return client.Auth()
 	}
 	return nil
