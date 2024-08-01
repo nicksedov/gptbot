@@ -1,4 +1,4 @@
-package openai
+package gigachat
 
 import (
 	"fmt"
@@ -17,13 +17,16 @@ func init() {
 }
 
 func TestSendRequest(t *testing.T) {
+	client := GetClient()
+	assert.NotNil(t, client)
+	err := client.Auth()
+	assert.Nil(t, err)
 	resp := SendRequest(TEST_CHAT_ID, CHAT_PROMPT)
-	fmt.Printf("Response ID is %s\n", resp.ID)
 	choices := resp.Choices
 	assert.LessOrEqual(t, 1, len(choices))
-	fmt.Printf("%s answered:\n - %s", choices[0].Message.Role, choices[0].Message.Content)
+	fmt.Printf("%s answered:\n - %s\n", choices[0].Message.Role, choices[0].Message.Content)
 
-	var testHist []Messages = history[TEST_CHAT_ID]
+	var testHist []Message = history[TEST_CHAT_ID]
 	assert.NotNil(t, testHist)
 	assert.Equal(t, 2, len(testHist))
 }

@@ -1,4 +1,4 @@
-package openai
+package gigachat
 
 import "gptbot/pkg/model"
 
