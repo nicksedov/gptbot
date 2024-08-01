@@ -2,7 +2,7 @@ package scheduler
 
 import (
 	"gptbot/pkg/model"
-	"gptbot/pkg/openai"
+	openai "gptbot/pkg/gigachat"
 	"gptbot/pkg/telegram"
 )
 
