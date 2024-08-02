@@ -22,11 +22,14 @@ type Settings struct {
 			ClientID          string `yaml:"client_id"`
 			ClientSecret      string `yaml:"client_secret"`
 		} `yaml:"auth"`
-		Model             string `yaml:"model"`
-		Temperature       float64  `yaml:"temperature"`
-		TopP              float64  `yaml:"top_p"`
-		MaxTokens         int64    `yaml:"max_tokens"`
-		RepetitionPenalty float64  `yaml:"repetition_penalty"`
+		TLS               []string `yaml:"tls"`
+		LLMConfig struct {
+			Model             string   `yaml:"model"`
+			Temperature       float64  `yaml:"temperature"`
+			TopP              float64  `yaml:"top_p"`
+			MaxTokens         int64    `yaml:"max_tokens"`
+			RepetitionPenalty float64  `yaml:"repetition_penalty"`
+		} `yaml:"llm_config"`
 		Completions struct {
 			Context string `yaml:"context"`
 		} `yaml:"completions"`

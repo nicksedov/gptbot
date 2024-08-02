@@ -72,17 +72,17 @@ func prepareRequest(chatId int64, content string) *ChatRequest {
 	} else {
 		messages = history[chatId]
 	}
-	gcCfg := settings.GetSettings().GigaChat
+	llmCfg := settings.GetSettings().GigaChat.LLMConfig
 	req := ChatRequest{
-		Model:             gcCfg.Model,
-		Messages:          messages,
-		Temperature:       ptr(gcCfg.Temperature),
-		TopP:              ptr(gcCfg.TopP),
+		Model:             llmCfg.Model,
+		Temperature:       &llmCfg.Temperature,
+		TopP:              &llmCfg.TopP,
 		N:                 ptr(int64(1)),
 		Stream:            ptr(false),
-		MaxTokens:         ptr(gcCfg.MaxTokens),
-		RepetitionPenalty: ptr(gcCfg.RepetitionPenalty),
+		MaxTokens:         &llmCfg.MaxTokens,
+		RepetitionPenalty: &llmCfg.RepetitionPenalty,
 		UpdateInterval:    ptr(int64(0)),
+		Messages:          messages,
 	}
 	return &req
 }

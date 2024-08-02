@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"gptbot/pkg/settings"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -64,27 +66,15 @@ func NewInsecureClient(clientId string, clientSecret string) (*Client, error) {
 // NewClientWithConfig creates a new GigaChat client with the specified configuration.
 func NewClientWithConfig(config *Config) (*Client, error) {
 	var customTransport *http.Transport
-
 	if dt, ok := http.DefaultTransport.(*http.Transport); ok {
 		customTransport = dt.Clone()
 	}
 	if config.Insecure {
 		customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	} else {
-		f := "../../russian_trusted_root_ca_pem.crt"
-		r, _ := os.ReadFile(f)
-		block1, _ := pem.Decode(r)
-		rootCert, _ := x509.ParseCertificate(block1.Bytes)
-		f = "../../russian_trusted_sub_ca_pem.crt"
-		r, _ = os.ReadFile(f)
-		block2, _ := pem.Decode(r)
-		caCert, _ := x509.ParseCertificate(block2.Bytes)
-		pool := x509.NewCertPool()
-		pool.AddCert(rootCert)
-		pool.AddCert(caCert)
-		customTransport.TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: false,
-			RootCAs: pool,
+		customTransport.TLSClientConfig = &tls.Config{RootCAs: x509.NewCertPool()}
+		for _, tlsCertPath := range settings.GetSettings().GigaChat.TLS {
+			customTransport.TLSClientConfig.RootCAs.AddCert(loadX509FromPem(tlsCertPath))
 		}
 	}
 
@@ -153,4 +143,20 @@ func (c *Client) sendRequest(_ context.Context, req *http.Request) (*http.Respon
 	}
 
 	return res, nil
+}
+
+func loadX509FromPem(path string) *x509.Certificate {
+	var cert *x509.Certificate
+	var err error
+	pemContent, err := os.ReadFile(path)
+	if err == nil {
+		pemBlock, _ := pem.Decode(pemContent)
+		if pemBlock != nil {
+			cert, err = x509.ParseCertificate(pemBlock.Bytes)
+		}
+	}
+	if err != nil {
+		log.Panicln("Error loading TLS certificate", err)
+	}
+	return cert
 }
