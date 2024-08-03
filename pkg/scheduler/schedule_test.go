@@ -31,7 +31,7 @@ func TestSchedule(t *testing.T) {
 	// Run test
 	Schedule(&events, handler)
 
-	overlapTime := 3000 * time.Millisecond
+	overlapTime := 1000 * time.Millisecond
 	// Scheduled events execute asynchronously in goroutines; need to wait enough time until they complete
 	time.Sleep(expectedCompletionTime + overlapTime)
 

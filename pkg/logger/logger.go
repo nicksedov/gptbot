@@ -16,5 +16,6 @@ func InitLog() {
 		multiWriter := io.MultiWriter(os.Stderr, lumberjackLogger)
 		log.SetFlags(log.LstdFlags)
 		log.SetOutput(multiWriter)
+		log.Println("Logging subsystem initialized")
 	}
 }
