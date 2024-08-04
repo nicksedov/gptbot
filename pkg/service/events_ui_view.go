@@ -9,7 +9,7 @@ import (
 	"gptbot/pkg/view"
 )
 
-func GetEventsTabView(offsetParam string, filter string) (*view.EventsTabView, error) {
+func GetEventsTabView(offsetParam string, filter string, alert string) (*view.EventsTabView, error) {
 	events, dbErr := model.ReadEvents()
 	if dbErr != nil {
 		return nil, dbErr
@@ -68,7 +68,13 @@ func GetEventsTabView(offsetParam string, filter string) (*view.EventsTabView, e
 		promptParamViews[i] = view.EventPromptParam{ID: promptParamItem.ID, PromptID: promptParamItem.PromptID, Title: promptParamItem.Title}
 	}
 
-	return &view.EventsTabView{EventViews: eventViews, Prompts: promptItems, PromptParams: promptParamViews, Chats: chatItems}, nil
+	return &view.EventsTabView{
+		Alert: alert,
+		EventViews: eventViews, 
+		Prompts: promptItems, 
+		PromptParams: promptParamViews, 
+		Chats: chatItems,
+	}, nil
 }
 
 func timeFilterPredicate(evTime time.Time, filter string) bool {

@@ -1,6 +1,7 @@
 package view
 
 type EventsTabView struct {
+	Alert        string             `json:"alert"`
 	EventViews   []EventView        `json:"events"`
 	PromptParams []EventPromptParam `json:"promptParams"`
 	Prompts      []DropdownItem     `json:"prompts"`
