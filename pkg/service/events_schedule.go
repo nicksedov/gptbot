@@ -10,7 +10,7 @@ func ScheduleEvents() (*[]model.SingleEvent, error) {
 	if dbErr != nil {
 		return nil, dbErr
 	}
-	var h *scheduler.GptChatEventHandler = &scheduler.GptChatEventHandler{}
+	var h *scheduler.ChatEventHandler = &scheduler.ChatEventHandler{}
 	scheduler.Schedule(events, h)
 	return events, nil
 }

@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	openai "gptbot/pkg/gigachat"
+	ai "gptbot/pkg/gigachat"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -35,7 +35,7 @@ func handleMessage(message *tgbotapi.Message) {
 }
 
 func processChat(chatId int64, prompt string) {
-	resp := openai.SendRequest(chatId, prompt)
+	resp := ai.SendRequest(chatId, prompt)
 	if len(resp.Choices) > 0 {
 		msg := tgbotapi.NewMessage(chatId, resp.Choices[0].Message.Content)
 		bot.Send(msg)

@@ -45,6 +45,8 @@ func main() {
 	router.POST("/chats/create", controller.ChatCreate)
 	router.DELETE("/chats/delete/:id", controller.ChatDelete)
 
+	router.POST("/messages/create", controller.MessageCreate)
+
 	settings := settings.GetSettings()
 	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)
 	srvErr := router.Run(serverAddress)
