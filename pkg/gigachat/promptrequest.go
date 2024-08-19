@@ -14,3 +14,7 @@ func GetMessageByPrompt(e *model.SingleEvent) string {
 		return e.Prompt.AltText
 	}
 }
+
+func GetResponseContent(resp *ChatResponse) string {
+	return resp.Choices[0].Message.Content
+}

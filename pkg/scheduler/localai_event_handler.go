@@ -1,18 +1,18 @@
 package scheduler
 
 import (
-	ai "gptbot/pkg/gigachat"
+	ai "gptbot/pkg/localai"
 	"gptbot/pkg/model"
 	"gptbot/pkg/telegram"
 )
 
-type ChatEventHandler struct{}
+type LocalAIEventHandler struct{}
 
-func (h *ChatEventHandler) handle(event *model.SingleEvent) error {
+func (h *LocalAIEventHandler) handle(event *model.SingleEvent) error {
 	chatId := event.Chat.ChatID
 	msg := ai.GetMessageByPrompt(event)
 	telegram.SendMarkdownText(msg, chatId)
 	return nil
 }
 
-func (h *ChatEventHandler) onError(e error) {}
+func (h *LocalAIEventHandler) onError(e error) {}
