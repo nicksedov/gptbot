@@ -9,8 +9,13 @@ import (
 )
 
 var client *openai.Client
-var history map[int64][]openai.ChatCompletionRequestMessage = make(map[int64][]openai.ChatCompletionRequestMessage)
+var history map[int64][]Message = make(map[int64][]Message)
 const historyDepth int = 8
+
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
 
 func SendRequest(chatId int64, prompt string) *openai.CreateChatCompletionResponse {
 	req := prepareRequest(chatId, prompt)
@@ -34,14 +39,14 @@ func SendRequest(chatId int64, prompt string) *openai.CreateChatCompletionRespon
 }
 
 
-func updateHistory(chatId int64, role openai.ChatCompletionRequestMessageRole, content string) {
+func updateHistory[T openai.ChatCompletionRequestMessageRole|openai.ChatCompletionResponseMessageRole](chatId int64, role T, content string) {
 	userHist := history[chatId]
 	if userHist == nil {
-		userHist = []openai.ChatCompletionRequestMessage{}
+		userHist = []Message{}
 	} else if len(userHist) >= historyDepth {
 		userHist = userHist[len(userHist)-historyDepth:]
 	}
-	userHist = append(userHist, openai.ChatCompletionRequestMessage{Role: role, Content: content})
+	userHist = append(userHist, Message{Role: string(role), Content: content})
 	history[chatId] = userHist
 }
 
@@ -54,10 +59,17 @@ func prepareRequest(chatId int64, content string) *openai.CreateChatCompletionRe
 		messages = append(messages, openai.ChatCompletionRequestMessage{
 			Role: openai.ChatCompletionRequestMessageRoleSystem, Content: contextDescription,
 		})
-		messages = append(messages, history[chatId]...)
-	} else {
-		messages = history[chatId]
 	}
+	for _, message := range history[chatId] {
+		messages = append(messages, openai.ChatCompletionRequestMessage{
+			Role: openai.ChatCompletionRequestMessageRole(message.Role),
+			Content: message.Content,
+		})
+	}
+	messages = append(messages, openai.ChatCompletionRequestMessage{
+		Role: openai.ChatCompletionRequestMessageRoleAssistant,
+		Content: "",
+	})
 	llmCfg := settings.GetSettings().GigaChat.LLMConfig
 	req := &openai.CreateChatCompletionRequest{
 		//Model:             llmCfg.Model,
@@ -77,6 +89,6 @@ func processResponse(chatId int64, resp *openai.CreateChatCompletionResponse) {
 	choices := resp.Choices
 	if len(choices) > 0 {
 		msg := choices[0]
-		updateHistory(chatId, openai.ChatCompletionRequestMessageRole(msg.Message.Value.Role), msg.Message.Value.Content)
+		updateHistory(chatId, msg.Message.Value.Role, msg.Message.Value.Content)
 	}
 }
