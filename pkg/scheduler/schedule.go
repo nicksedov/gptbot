@@ -19,7 +19,7 @@ func initScheduler() *tasks.Scheduler {
 	return scheduler
 }
 
-func Schedule(events *[]model.SingleEvent, h EventHandler) {
+func Schedule(events *[]model.SingleEvent, getMessageByPrompt func(e *model.SingleEvent) (string, error)) {
 
 	scheduler := initScheduler()
 
@@ -30,8 +30,8 @@ func Schedule(events *[]model.SingleEvent, h EventHandler) {
 			task := tasks.Task{
 				Interval: duration,
 				RunOnce:  true,
-				TaskFunc: func() error { return h.handle(&event) },
-				ErrFunc:  h.onError,
+				TaskFunc: func() error { return handle(&event, getMessageByPrompt) },
+				ErrFunc:  onError,
 			}
 			scheduler.Add(&task)
 		}

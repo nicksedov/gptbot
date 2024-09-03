@@ -65,12 +65,13 @@ func GetDefaultTestEvent() SingleEvent {
 	return event
 }
 
-func GetFutureTestEvent(d time.Duration) SingleEvent {
+func GetFutureTestEvent(id uint, d time.Duration) SingleEvent {
 	futureEvent := event
 	future := time.Now().Add(d)
 	futureDate := future.Truncate(24 * time.Hour)
 	futureEvent.Date = datatypes.Date(futureDate)
 	futureEvent.Time = datatypes.NewTime(future.Hour(), future.Minute(), future.Second(), future.Nanosecond())
+	futureEvent.ID = id
 	return futureEvent
 }
 

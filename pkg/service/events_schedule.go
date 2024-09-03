@@ -3,6 +3,8 @@ package service
 import (
 	"gptbot/pkg/model"
 	"gptbot/pkg/scheduler"
+	ai "gptbot/pkg/localai"
+	//ai "gptbot/pkg/gigachat"
 )
 
 func ScheduleEvents() (*[]model.SingleEvent, error) {
@@ -10,8 +12,6 @@ func ScheduleEvents() (*[]model.SingleEvent, error) {
 	if dbErr != nil {
 		return nil, dbErr
 	}
-	//var h scheduler.EventHandler = &scheduler.GigaChatEventHandler{}
-	var h scheduler.EventHandler = &scheduler.LocalAIEventHandler{}
-	scheduler.Schedule(events, h)
+	scheduler.Schedule(events, ai.GetMessageByPrompt)
 	return events, nil
 }

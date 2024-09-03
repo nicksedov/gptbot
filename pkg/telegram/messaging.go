@@ -13,7 +13,7 @@ func Send(mc tgbotapi.Chattable) (tgbotapi.Message, error) {
 	return msg, err
 }
 
-func SendMarkdownText(content string, chatId int64) (tgbotapi.Message, error) {
+func SendMarkdownText(chatId int64, content string) (tgbotapi.Message, error) {
 	chattable := tgbotapi.NewMessage(chatId, content)
 	chattable.ParseMode = "markdown"
 	return Send(chattable)

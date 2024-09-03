@@ -1,10 +1,10 @@
 package scheduler
 
 import (
+	"gptbot/pkg/model"
+	"log"
 	"testing"
 	"time"
-
-	"gptbot/pkg/model"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -24,17 +24,17 @@ func TestSchedule(t *testing.T) {
 	var events []model.SingleEvent
 	for i := 1; i <= eventsToSchedule; i++ {
 		fireTime := time.Duration(i * int(eventsInterval))
-		event := model.GetFutureTestEvent(fireTime)
+		event := model.GetFutureTestEvent(uint(i), fireTime)
 		events = append(events, event)
 	}
 
 	// Run test
-	Schedule(&events, handler)
+	Schedule(&events, handler.testFunc)
 
 	overlapTime := 1000 * time.Millisecond
 	// Scheduled events execute asynchronously in goroutines; need to wait enough time until they complete
 	time.Sleep(expectedCompletionTime + overlapTime)
-
+	log.Printf("Verifying that %d background events successfully fired at this moment\n", eventsToSchedule)
 	// Evaluate real duration and compare with expected
 	actualTime := handler.fireTime.Sub(handler.triggerTime)
 	assert.GreaterOrEqual(t, actualTime, expectedCompletionTime)
@@ -48,10 +48,9 @@ type TestEventHandler struct {
 	fireCount   int
 }
 
-func (h *TestEventHandler) handle(t *model.SingleEvent) error {
+func (h *TestEventHandler) testFunc(t *model.SingleEvent) (string, error) {
 	h.fireTime = time.Now()
 	h.fireCount++
-	return nil
+	log.Printf("Firing background event with ID=%d\n", t.ID)
+	return "Done", nil
 }
-
-func (h *TestEventHandler) onError(e error) {}

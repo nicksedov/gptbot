@@ -30,7 +30,7 @@ func TestSendMarkdownMessage(t *testing.T) {
 	text := fmt.Sprintf("Это сообщение отправлено из unit-теста.\n"+
 		"Проект: ```%s```\nМетод: ```%s```\nРасположение: ```%s```",
 		"gptbot", "TestSendMarkdownMessage()", "gptbot/pkg/telegram/messaging_test.go")
-	msg, err := SendMarkdownText(text, testChatId)
+	msg, err := SendMarkdownText(testChatId, text)
 	assert.Nil(t, err)
 	assert.NotNil(t, msg)
 	assert.Equal(t, testChatId, msg.Chat.ID)

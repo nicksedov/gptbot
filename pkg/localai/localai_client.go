@@ -17,25 +17,24 @@ type Message struct {
 	Content string `json:"content"`
 }
 
-func SendRequest(chatId int64, prompt string) *openai.CreateChatCompletionResponse {
+func SendRequest(chatId int64, prompt string) (*openai.CreateChatCompletionResponse, error) {
 	req := prepareRequest(chatId, prompt)
 	if client == nil {
 		var err error
 		client, err = openai.NewClient("http://localhost:5555/")
 		if err != nil {
-			log.Panicln("LocalAI connection error", err)
+			return nil, err
 		} else {
 			log.Println("LocalAI client initialized successfully")
 		}
 	}
 	
 	response, error := client.CreateChatCompletion(context.Background(), req)
-
 	if error != nil {
-		log.Panicf("LocalAI API call error. Reason: %s", error.Error())
+		return nil, error
 	}
 	processResponse(chatId, response)
-	return response
+	return response, nil
 }
 
 

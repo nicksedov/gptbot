@@ -14,7 +14,7 @@ func MessageCreate(c *gin.Context) {
 	c.ShouldBindJSON(&instantMsg)
 	tgChat, err := model.GetChat(instantMsg.TelegramChatID)
 	if err == nil {
-		telegram.SendMarkdownText(instantMsg.MessageText, tgChat.ChatID)
+		telegram.SendMarkdownText(tgChat.ChatID, instantMsg.MessageText)
 		c.Status(http.StatusOK)
 	} else {
 		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})

@@ -1,7 +1,9 @@
 package telegram
 
 import (
+	"errors"
 	"fmt"
+	"log"
 
 	"gptbot/pkg/settings"
 
@@ -29,6 +31,15 @@ func initBot() error {
 	}
 	upd := tgbotapi.NewUpdate(0)
 	upd.Timeout = 60
-	go updatesListener(bot.GetUpdatesChan(upd))
+	go updatesListener(bot.GetUpdatesChan(upd), errorHandler)
 	return nil
+}
+
+func errorHandler(err error) {
+	settings := settings.GetSettings()
+	msg := tgbotapi.NewMessage(settings.Telegram.ServiceChat,  fmt.Sprintf("Exception occured on message processing\n%v", err))
+	_, reportErr := bot.Send(msg)
+	if reportErr != nil {
+		log.Printf("Exception occured on message processing\n%v", errors.Join(err, reportErr))
+	}
 }

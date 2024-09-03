@@ -1,9 +1,21 @@
 package scheduler
 
-import "gptbot/pkg/model"
+import (
+	"gptbot/pkg/model"
+	//"gptbot/pkg/settings"
+	"gptbot/pkg/telegram"
+)
 
-type EventHandler interface {
-	handle(t *model.SingleEvent) error
+func handle(event *model.SingleEvent, getMessageByPrompt func(e *model.SingleEvent) (string, error)) error {
+	chatId := event.Chat.ChatID
+	msg, err := getMessageByPrompt(event)
+	if err == nil {
+		_, err = telegram.SendMarkdownText(chatId, msg)
+	}
+	return err
+}
 
-	onError(err error)
+func onError(err error) {
+	//serviceChatId := settings.GetSettings().Telegram.ServiceChat
+	//telegram.SendMarkdownText("Error occured while processing event with LocalAI handler")
 }

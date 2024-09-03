@@ -26,11 +26,22 @@ func (event SingleEvent) GetResolvedPrompt() (string, error) {
 		}
 		return promptToResolve, nil
 	} else {
-		return "", errors.New("Prompt string is empty")
+		return "", errors.New("event has invalid or empty prompt text")
 	}
 }
 
-func (event SingleEvent) GetAltText() string {
+func (event SingleEvent) GetAltText() (string, error) {
 	prompt := event.Prompt
-	return prompt.AltText
+	textToResolve := prompt.AltText
+	if strings.TrimSpace(textToResolve) != "" {
+		paramsList := event.EventPromptParams
+		for _, param := range paramsList {
+			tag := param.PromptParam.Tag
+			val := param.Value
+			textToResolve = strings.ReplaceAll(textToResolve, "${"+tag+"}", val)
+		}
+		return textToResolve, nil
+	} else {
+		return "", errors.New("event has invalid or empty fallback text")
+	}
 }

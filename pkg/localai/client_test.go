@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-playground/assert/v2"
+	"github.com/stretchr/testify/assert"
 	openai "github.com/gopenai/openai-client"
 )
 
@@ -49,10 +49,7 @@ func TestSendRequest(t *testing.T) {
 	}
 	startTime := time.Now()
 	response, err := client.CreateChatCompletion(context.Background(), req)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
+	assert.Nil(t, err)
 	duration := time.Since(startTime)
 
 	// Print the completed text
@@ -66,8 +63,10 @@ func TestSendRequest2(t *testing.T) {
 	assert.NotEqual(t, 0, testChatId)
 	req1 := "Расскажи, кто возглавлял Францию в 1812 году"
 	req2 := "В каких битвах он принимал участие в этот год?"
-	res1 := SendRequest(testChatId, req1)
-	res2 := SendRequest(testChatId, req2)
+	res1, err := SendRequest(testChatId, req1)
+	assert.Nil(t, err)
+	res2, err := SendRequest(testChatId, req2)
+	assert.Nil(t, err)
 	fmt.Printf("Вопрос:\n%s\nОтвет:\n%s\nВопрос:\n%s\nОтвет:\n%s\n", 
 	req1, res1.Choices[0].Message.Value.Content, 
 	req2, res2.Choices[0].Message.Value.Content)
