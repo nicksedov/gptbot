@@ -30,7 +30,7 @@ func (event SingleEvent) GetResolvedPrompt() (string, error) {
 	}
 }
 
-func (event SingleEvent) GetAltText() (string, error) {
+func (event SingleEvent) GetAltText(causedBy error) (string, error) {
 	prompt := event.Prompt
 	textToResolve := prompt.AltText
 	if strings.TrimSpace(textToResolve) != "" {
@@ -40,7 +40,7 @@ func (event SingleEvent) GetAltText() (string, error) {
 			val := param.Value
 			textToResolve = strings.ReplaceAll(textToResolve, "${"+tag+"}", val)
 		}
-		return textToResolve, nil
+		return textToResolve, causedBy
 	} else {
 		return "", errors.New("event has invalid or empty fallback text")
 	}

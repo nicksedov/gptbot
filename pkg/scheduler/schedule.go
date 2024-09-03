@@ -1,9 +1,9 @@
 package scheduler
 
 import (
-	"time"
-
 	"gptbot/pkg/model"
+	"gptbot/pkg/telegram"
+	"time"
 
 	"github.com/madflojo/tasks"
 )
@@ -31,7 +31,7 @@ func Schedule(events *[]model.SingleEvent, getMessageByPrompt func(e *model.Sing
 				Interval: duration,
 				RunOnce:  true,
 				TaskFunc: func() error { return handle(&event, getMessageByPrompt) },
-				ErrFunc:  onError,
+				ErrFunc:  telegram.ErrorReporter,
 			}
 			scheduler.Add(&task)
 		}

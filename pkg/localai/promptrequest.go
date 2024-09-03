@@ -4,22 +4,23 @@ import (
 	"errors"
 	"gptbot/pkg/model"
 	"strings"
+
 	openai "github.com/gopenai/openai-client"
 )
 
 func GetMessageByPrompt(e *model.SingleEvent) (string, error) {
 	prompt, pErr := e.GetResolvedPrompt()
 	if pErr != nil {
-		altText, altErr := e.GetAltText()
+		altText, altErr := e.GetAltText(pErr)
 		return altText, errors.Join(pErr, altErr)
 	}
 	resp, err := SendRequest(0, prompt)
 	if err != nil {
-		return e.GetAltText()
+		return e.GetAltText(err)
 	}
 	respContent, err := GetResponseContent(resp)
 	if err != nil {
-		return e.GetAltText()
+		return e.GetAltText(err)
 	}
 	return respContent, nil
 }
