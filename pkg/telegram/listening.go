@@ -44,9 +44,8 @@ func processChat(chatId int64, prompt string) error {
 	if reqErr == nil {
 		respContent, respErr := ai.GetResponseContent(resp)
 		if respErr == nil {
-			msg := tgbotapi.NewMessage(chatId, respContent)
-			bot.Send(msg)
-			return nil
+			_, sendErr := SendMarkdownText(chatId, respContent)
+			return sendErr
 		} else {
 			return respErr
 		}
