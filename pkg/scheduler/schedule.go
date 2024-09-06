@@ -19,7 +19,7 @@ func initScheduler() *tasks.Scheduler {
 	return scheduler
 }
 
-func Schedule(events *[]model.SingleEvent, getMessageByPrompt func(e *model.SingleEvent) (string, error)) {
+func Schedule(events *[]model.SingleEvent, composeMessage func(e *model.SingleEvent) (string, error)) {
 
 	scheduler := initScheduler()
 
@@ -30,7 +30,7 @@ func Schedule(events *[]model.SingleEvent, getMessageByPrompt func(e *model.Sing
 			task := tasks.Task{
 				Interval: duration,
 				RunOnce:  true,
-				TaskFunc: func() error { return handle(&event, getMessageByPrompt) },
+				TaskFunc: func() error { return handle(&event, composeMessage) },
 				ErrFunc:  telegram.ErrorReporter,
 			}
 			scheduler.Add(&task)

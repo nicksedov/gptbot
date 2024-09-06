@@ -21,7 +21,8 @@ func SendRequest(chatId int64, prompt string) (*openai.CreateChatCompletionRespo
 	req := prepareRequest(chatId, prompt)
 	if client == nil {
 		var err error
-		client, err = openai.NewClient("http://localhost:5555/")
+		url := settings.GetSettings().LocalAI.URL
+		client, err = openai.NewClient(url)
 		if err != nil {
 			return nil, err
 		} else {
@@ -52,7 +53,8 @@ func updateHistory[T openai.ChatCompletionRequestMessageRole|openai.ChatCompleti
 func prepareRequest(chatId int64, content string) *openai.CreateChatCompletionRequest {
 	updateHistory(chatId, openai.ChatCompletionRequestMessageRoleUser, content)
 	var messages []openai.ChatCompletionRequestMessage
-	contextDescription := settings.GetSettings().GigaChat.Completions.Context
+	llmCfg := settings.GetSettings().LLMConfig
+	contextDescription := llmCfg.Completions.Context
 	if contextDescription != "" {
 		messages = make( []openai.ChatCompletionRequestMessage, 0, len(history[chatId])+1)
 		messages = append(messages, openai.ChatCompletionRequestMessage{
@@ -69,10 +71,9 @@ func prepareRequest(chatId int64, content string) *openai.CreateChatCompletionRe
 		Role: openai.ChatCompletionRequestMessageRoleAssistant,
 		Content: "",
 	})
-	llmCfg := settings.GetSettings().GigaChat.LLMConfig
+	
 	req := &openai.CreateChatCompletionRequest{
-		//Model:             llmCfg.Model,
-		Model:             "saiga_gemma2_10b-full",
+		Model:             settings.GetSettings().LocalAI.Model,
 		Temperature:       openai.NewOptNilFloat64(llmCfg.Temperature),
 		TopP:              openai.NewOptNilFloat64(llmCfg.TopP),
 		N:                 openai.NewOptNilInt(1),

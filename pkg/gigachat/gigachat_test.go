@@ -21,7 +21,8 @@ func TestSendRequest(t *testing.T) {
 	assert.NotNil(t, client)
 	err := client.Auth()
 	assert.Nil(t, err)
-	resp := SendRequest(TEST_CHAT_ID, CHAT_PROMPT)
+	resp, err := SendRequest(TEST_CHAT_ID, CHAT_PROMPT)
+	assert.Nil(t, err)
 	choices := resp.Choices
 	assert.LessOrEqual(t, 1, len(choices))
 	fmt.Printf("%s answered:\n - %s\n", choices[0].Message.Role, choices[0].Message.Content)

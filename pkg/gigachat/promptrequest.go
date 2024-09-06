@@ -1,20 +1,35 @@
 package gigachat
 
-import "gptbot/pkg/model"
+import (
+	"errors"
+	"gptbot/pkg/model"
+	"strings"
+)
 
-func GetMessageByPrompt(e *model.SingleEvent) string {
-	prompt, err := e.GetResolvedPrompt()
+func GetMessageByPrompt(e *model.SingleEvent) (string, error) {
+	prompt, pErr := e.GetResolvedPrompt()
+	if pErr != nil {
+		altText, altErr := e.GetAltText(pErr)
+		return altText, errors.Join(pErr, altErr)
+	}
+	resp, err := SendRequest(0, prompt)
 	if err != nil {
-		return e.Prompt.AltText
+		return e.GetAltText(err)
 	}
-	resp := SendRequest(0, prompt)
-	if len(resp.Choices) > 0 {
-		return resp.Choices[0].Message.Content
-	} else {
-		return e.Prompt.AltText
+	respContent, err := GetResponseContent(resp)
+	if err != nil {
+		return e.GetAltText(err)
 	}
+	return respContent, nil
 }
 
-func GetResponseContent(resp *ChatResponse) string {
-	return resp.Choices[0].Message.Content
+func GetResponseContent(resp *ChatResponse) (string, error) {
+	for _, choice := range resp.Choices {
+		content := choice.Message.Content
+		normalizedContent := strings.TrimSpace(content)
+		if normalizedContent != "" {
+			return normalizedContent, nil
+		}
+	}
+	return "", errors.New("unexpectedly blank response obtained")
 }

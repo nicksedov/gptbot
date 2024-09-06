@@ -23,17 +23,23 @@ type Settings struct {
 			ClientSecret      string `yaml:"client_secret"`
 		} `yaml:"auth"`
 		TLS               []string `yaml:"tls"`
-		LLMConfig struct {
-			Model             string   `yaml:"model"`
-			Temperature       float64  `yaml:"temperature"`
-			TopP              float64  `yaml:"top_p"`
-			MaxTokens         int64    `yaml:"max_tokens"`
-			RepetitionPenalty float64  `yaml:"repetition_penalty"`
-		} `yaml:"llm_config"`
+		Model             string   `yaml:"model"`
+	}  `yaml:"gigachat"`
+	
+	LocalAI struct {
+		URL               string  `yaml:"url"`
+		Model             string   `yaml:"model"`
+	}  `yaml:"localai"`
+
+	LLMConfig struct {
+		Temperature       float64  `yaml:"temperature"`
+		TopP              float64  `yaml:"top_p"`
+		MaxTokens         int64    `yaml:"max_tokens"`
+		RepetitionPenalty float64  `yaml:"repetition_penalty"`
 		Completions struct {
 			Context string `yaml:"context"`
 		} `yaml:"completions"`
-	}  `yaml:"gigachat"`
+	} `yaml:"llm_config"`
 
 	Telegram struct {
 		BotToken    string `yaml:"bot_token"`

@@ -29,14 +29,15 @@ func GetClient() *Client {
 	return client
 }
 
-func SendRequest(chatId int64, prompt string) *ChatResponse {
+func SendRequest(chatId int64, prompt string) (*ChatResponse, error) {
 	reqData := prepareRequest(chatId, prompt)
 	response, error := GetClient().Chat(reqData)
 	if error != nil {
-		log.Panicf("GigaChat API call error. Reason: %s", error.Error())
+		log.Printf("GigaChat API call error. Reason: %s\n", error.Error())
+		return nil, error
 	}
 	processResponse(chatId, response)
-	return response
+	return response, nil
 }
 
 func authCheck() error {
@@ -64,7 +65,8 @@ func updateHistory(chatId int64, role string, content string) {
 func prepareRequest(chatId int64, content string) *ChatRequest {
 	updateHistory(chatId, "user", content)
 	var messages []Message
-	contextDescription := settings.GetSettings().GigaChat.Completions.Context
+	llmCfg := settings.GetSettings().LLMConfig
+	contextDescription := llmCfg.Completions.Context
 	if contextDescription != "" {
 		messages = make([]Message, 0, len(history[chatId])+1)
 		messages = append(messages, Message{Role: "system", Content: contextDescription})
@@ -72,9 +74,9 @@ func prepareRequest(chatId int64, content string) *ChatRequest {
 	} else {
 		messages = history[chatId]
 	}
-	llmCfg := settings.GetSettings().GigaChat.LLMConfig
+	
 	req := ChatRequest{
-		Model:             llmCfg.Model,
+		Model:             settings.GetSettings().GigaChat.Model,
 		Temperature:       &llmCfg.Temperature,
 		TopP:              &llmCfg.TopP,
 		N:                 ptr(int64(1)),
