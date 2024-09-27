@@ -48,9 +48,9 @@ type TestEventHandler struct {
 	fireCount   int
 }
 
-func (h *TestEventHandler) testFunc(t *model.SingleEvent) (string, error) {
+func (h *TestEventHandler) testFunc(t *model.SingleEvent) error {
 	h.fireTime = time.Now()
 	h.fireCount++
 	log.Printf("Firing background event with ID=%d\n", t.ID)
-	return "Done", nil
+	return nil
 }

@@ -41,6 +41,8 @@ type Settings struct {
 		} `yaml:"completions"`
 	} `yaml:"llm_config"`
 
+	Fallback bool `yaml:"fallback"`
+
 	Telegram struct {
 		BotToken    string `yaml:"bot_token"`
 		ServiceChat int64  `yaml:"service_chat"`

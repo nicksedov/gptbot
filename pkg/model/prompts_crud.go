@@ -1,36 +1,35 @@
 package model
 
-import "log"
+import "gorm.io/gorm"
 
 func CreatePrompt(p *Prompt) error {
-	db, err := initDb()
-	if err != nil {
-		log.Fatal("failed to connect database")
-		return err
+	db, err := getDb()
+	if err == nil {
+		return db.Create(p).Error
 	}
-	tx := db.Create(p)
-	tx.Commit()
-	return nil
+	return err
 }
 
 func CreatePromptParams(p []PromptParam) error {
-	db, err := initDb()
-	if err != nil {
-		log.Fatal("failed to connect database")
-		return err
+	db, err := getDb()
+	if err == nil {
+		return db.CreateInBatches(p, 10).Error
 	}
-	tx := db.CreateInBatches(p, 10)
-	tx.Commit()
-	return nil
+	return err
 }
 
 func DeletePrompt(id uint) error {
-	db, err := initDb()
-	if err != nil {
-		log.Fatal("failed to connect database")
-		return err
+	db, err := getDb()
+	if err == nil {
+		return db.Transaction(func(tx *gorm.DB) error {
+			if err := tx.Where("\"promptId\" = ?", id).Delete(&PromptParam{}).Error; err != nil {
+				return err // return any error will rollback
+			}
+			if err := tx.Delete(&Prompt{ID: id}).Error; err != nil {
+				return err // return any error will rollback
+			}
+			return nil
+		})
 	}
-	db.Where("\"promptId\" = ?", id).Delete(&PromptParam{})
-	db.Delete(&Prompt{ID: id})
-	return nil
+	return err
 }

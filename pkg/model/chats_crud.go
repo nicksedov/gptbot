@@ -1,32 +1,24 @@
 package model
 
-import "log"
-
 func CreateChat(c *TelegramChat) error {
-	db, err := initDb()
-	if err != nil {
-		log.Fatal("failed to connect database")
-		return err
+	db, err := getDb()
+	if err == nil {
+		return db.Create(c).Error
 	}
-	tx := db.Create(c)
-	tx.Commit()
-	return nil
+	return err
 }
 
 func DeleteChat(id uint) error {
-	db, err := initDb()
-	if err != nil {
-		log.Fatal("failed to connect database")
-		return err
+	db, err := getDb()
+	if err == nil {
+		return db.Delete(&TelegramChat{ID: id}).Error
 	}
-	db.Delete(&TelegramChat{ID: id})
-	return nil
+	return err
 }
 
 func GetChat(id uint) (*TelegramChat, error) {
-	db, err := initDb()
+	db, err := getDb()
 	if err != nil {
-		log.Fatal("failed to connect database")
 		return nil, err
 	}
 	result := &TelegramChat{}

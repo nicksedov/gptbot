@@ -13,7 +13,7 @@ func TestGetResolvedPrompt(t *testing.T) {
 	event := GetDefaultTestEvent()
 	resolved, err := event.GetResolvedPrompt()
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error())
 	}
 	expected := event.Prompt.Prompt
 	pp := event.EventPromptParams

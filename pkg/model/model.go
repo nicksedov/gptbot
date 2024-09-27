@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"gorm.io/datatypes"
 )
 
@@ -10,6 +12,7 @@ type Prompt struct {
 	Prompt  string
 	AltText string `gorm:"column:altText"`
 }
+
 func (p Prompt) GetId() uint {
 	return p.ID
 }
@@ -55,4 +58,21 @@ type SingleEventPromptParam struct {
 	EventID       uint        `gorm:"column:singleEventId"`
 	PromptParamID uint        `gorm:"column:promptParamId"`
 	PromptParam   PromptParam `gorm:"foreignKey:PromptParamID"`
+}
+
+type MessageBuildStatus int
+
+const (
+	Pending MessageBuildStatus = iota
+	Created
+	Failed
+)
+
+type SingleEventPrebuiltMessage struct {
+	ID          uint               `gorm:"unique;primaryKey;autoIncrement"`
+	EventID     uint               `gorm:"column:singleEventId"`
+	Status      MessageBuildStatus `gorm:"column:status"`
+	Message     string             `gorm:"column:message"`
+	RequestedAt time.Time          `gorm:"column:requestedAt"`
+	BuiltAt     time.Time          `gorm:"column:builtAt"`
 }

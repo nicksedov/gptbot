@@ -10,35 +10,56 @@ import (
 	"gorm.io/gorm"
 )
 
-var db *gorm.DB
+var database *gorm.DB
 
 func initDb() (*gorm.DB, error) {
-	var err error
-	if db == nil {
-		dbConfig := settings.GetSettings().DbConfig
-		dsnFormat := "host=%s port=%d dbname=%s user=%s password=%s sslmode=%s"
-		dsn := fmt.Sprintf(dsnFormat,
-			dbConfig.Host, dbConfig.Port, dbConfig.DbName, dbConfig.User, dbConfig.Password, dbConfig.SSLMode)
-		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	dbConfig := settings.GetSettings().DbConfig
+	dsnFormat := "host=%s port=%d dbname=%s user=%s password=%s sslmode=%s"
+	dsn := fmt.Sprintf(dsnFormat,
+		dbConfig.Host, dbConfig.Port, dbConfig.DbName, dbConfig.User, dbConfig.Password, dbConfig.SSLMode)
+	log.Printf("Opening database connection: postgres://%s:%d/%s?sslMode=%s\n", dbConfig.Host, dbConfig.Port, dbConfig.DbName, dbConfig.SSLMode)	
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err == nil {
 		db.AutoMigrate(
 			&Prompt{},
 			&PromptParam{},
 			&SingleEvent{},
 			&SingleEventPromptParam{},
-			&TelegramChat{})
+			&TelegramChat{},
+			&SingleEventPrebuiltMessage{},
+		)
 	}
 	return db, err
 }
 
-func read[T any](selector func(items *[]T, db *gorm.DB)) (*[]T, error) {
-	db, err := initDb()
-	if err != nil {
-		log.Fatal("failed to connect database")
-		return nil, err
+func getDb() (*gorm.DB, error) {
+	var err error
+	if database == nil {
+		dbConfig := settings.GetSettings().DbConfig
+		database, err = initDb()
+		if err != nil {
+			log.Printf("Failed to connect database postgres://%s:%d/%s?sslMode=%s\n", dbConfig.Host, dbConfig.Port, dbConfig.DbName, dbConfig.SSLMode)
+		} else {
+			tx := database.Exec("select 1;")
+			if tx.Error == nil {
+				log.Println("Database connection opened successfully")
+			} else {
+				log.Printf("Failed to access database postgres://%s:%d/%s?sslMode=%s\n", dbConfig.Host, dbConfig.Port, dbConfig.DbName, dbConfig.SSLMode)
+			}
+			
+		}
 	}
-	items := new([]T)
-	selector(items, db)
-	return items, nil
+	return database, err
+}
+
+func read[T any](selector func(items *[]T, db *gorm.DB)) (*[]T, error) {
+	db, err := getDb()
+	if err == nil {
+		items := new([]T)
+		selector(items, db)
+		return items, nil
+	}
+	return nil, err
 }
 
 func GetAll[T any]() (*[]T, error) {

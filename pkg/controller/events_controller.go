@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -30,6 +31,18 @@ func EventCreate(c *gin.Context) {
 	event, err := service.BuildEventFromCreateView(&newEvent)
 	if err == nil {
 		err = model.CreateEvent(event)
+	}
+	if err != nil {
+		log.Printf("Failed to persist event record in database")
+	} else {
+		event, err = model.ReadEvent(event.ID) // enrich event with prompt details
+	}
+	if err != nil {
+		log.Printf("Failed to read event details from database")
+	} else {
+		log.Printf("New event successfully registered with parameters:\n" +
+		"  ID = %d\n  fire time = %s\n", event.ID, event.GetTime().Format(time.RFC822))
+		go service.PreprocessEvent(event)
 	}
 	onEventsChanged(c, err)
 }
