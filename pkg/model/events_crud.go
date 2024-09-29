@@ -50,6 +50,9 @@ func DeleteEvent(id uint) error {
 			if err := tx.Where("\"singleEventId\" = ?", id).Delete(&SingleEventPromptParam{}).Error; err != nil {
 				return err // return any error will rollback
 			}
+			if err := tx.Where("\"singleEventId\" = ?", id).Delete(&SingleEventPrebuiltMessage{}).Error; err != nil {
+				return err // return any error will rollback
+			}
 			if err := tx.Delete(&SingleEvent{ID: id}).Error; err != nil {
 				return err
 			}

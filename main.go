@@ -47,6 +47,8 @@ func main() {
 
 	router.POST("/messages/create", controller.MessageCreate)
 
+	router.GET("/prebuilt/view", controller.PrebuiltMessageView)
+
 	settings := settings.GetSettings()
 	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)
 	srvErr := router.Run(serverAddress)
