@@ -30,11 +30,11 @@ func DeletePrebuiltMessages(eventId uint) error {
 	return err
 }
 
-func ReadPrebuiltMessage(eventId uint) (*SingleEventPrebuiltMessage, error) {
-	findAllMessages := func(msgList *[]SingleEventPrebuiltMessage, db *gorm.DB) {
-		db.Where(&SingleEventPrebuiltMessage{EventID: eventId}).Find(msgList)
+func ReadPrebuiltMessageByEventId(eventId uint) (*SingleEventPrebuiltMessage, error) {
+	findAllMessages := func(msgList *[]SingleEventPrebuiltMessage, db *gorm.DB)  *gorm.DB {
+		return db.Where(&SingleEventPrebuiltMessage{EventID: eventId}).Find(msgList)
 	}
-	allMessages, err := read(findAllMessages)
+	allMessages, err := readMany(findAllMessages)
 	if err == nil {
 		var pending, failed *SingleEventPrebuiltMessage
 		for _, msg := range *allMessages {

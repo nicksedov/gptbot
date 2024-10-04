@@ -16,7 +16,7 @@ func HandleEvent(event *model.SingleEvent) error {
 	var err error
 	var errCountdown int = errorCountdownThreshold
 	for isPending(msg) && errCountdown > 0 {
-		msg, err = model.ReadPrebuiltMessage(event.ID)
+		msg, err = model.ReadPrebuiltMessageByEventId(event.ID)
 		if err != nil {
 			errCountdown--
 		} else {

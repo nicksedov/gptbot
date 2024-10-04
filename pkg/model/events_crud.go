@@ -7,17 +7,17 @@ import (
 )
 
 func ReadEvents() (*[]SingleEvent, error) {
-	findAllEvents := func(events *[]SingleEvent, db *gorm.DB) {
-		db.Preload("EventPromptParams.PromptParam").Joins("Prompt").Joins("Chat").Find(events)
+	findAllEvents := func(events *[]SingleEvent, db *gorm.DB) *gorm.DB {
+		return db.Preload("EventPromptParams.PromptParam").Joins("Prompt").Joins("Chat").Find(events)
 	}
-	return read(findAllEvents)
+	return readMany(findAllEvents)
 }
 
 func ReadEvent(eventId uint) (*SingleEvent, error) {
-	findEvent := func(events *[]SingleEvent, db *gorm.DB) {
-		db.Preload("EventPromptParams.PromptParam").Joins("Prompt").Joins("Chat").First(events, eventId)
+	findEvent := func(events *[]SingleEvent, db *gorm.DB) *gorm.DB {
+		return db.Preload("EventPromptParams.PromptParam").Joins("Prompt").Joins("Chat").First(events, eventId)
 	}
-	result, err := read(findEvent)
+	result, err := readMany(findEvent)
 	if err != nil {
 		return nil, err
 	} else if len(*result) > 0 {

@@ -48,6 +48,7 @@ func main() {
 	router.POST("/messages/create", controller.MessageCreate)
 
 	router.GET("/prebuilt/view", controller.PrebuiltMessageView)
+	router.PUT("/prebuilt/update/:id", controller.PrebuiltMessageUpdate)
 
 	settings := settings.GetSettings()
 	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)
