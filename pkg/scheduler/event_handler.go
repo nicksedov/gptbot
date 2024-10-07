@@ -9,7 +9,7 @@ import (
 
 const errorCountdownThreshold = 5
 const pendingInterval = time.Second * 3
-const pendingDurationThreshold = time.Minute * 5
+const pendingDurationThreshold = time.Minute * 15
 
 func HandleEvent(event *model.SingleEvent) error {
 	var msg *model.SingleEventPrebuiltMessage
