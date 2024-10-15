@@ -20,13 +20,14 @@ type Message struct {
 func SendRequest(chatId int64, prompt string) (*openai.CreateChatCompletionResponse, error) {
 	req := prepareRequest(chatId, prompt)
 	if client == nil {
-		var err error
 		url := settings.GetSettings().LocalAI.URL
-		client, err = openai.NewClient(url)
+		apiKey := settings.GetSettings().LocalAI.APIKey
+		bearerClient, err := openai.NewBearerAuthClient(url, apiKey)
 		if err != nil {
 			return nil, err
 		} else {
 			log.Println("LocalAI client initialized successfully")
+			client = bearerClient.Client
 		}
 	}
 	

@@ -27,7 +27,8 @@ type Settings struct {
 	}  `yaml:"gigachat"`
 	
 	LocalAI struct {
-		URL               string  `yaml:"url"`
+		URL               string   `yaml:"url"`
+		APIKey            string   `yaml:"apikey"` 
 		Model             string   `yaml:"model"`
 	}  `yaml:"localai"`
 
