@@ -39,6 +39,7 @@ func main() {
 
 	router.GET("/prompts/view", controller.Wrap(controller.PromptView))
 	router.POST("/prompts/create", controller.Wrap(controller.PromptCreate))
+	router.PUT("/prompts/update/:id", controller.Wrap(controller.PromptUpdate))
 	router.DELETE("/prompts/delete/:id", controller.Wrap(controller.PromptDelete))
 
 	router.GET("/chats/view", controller.Wrap(controller.ChatView))

@@ -11,6 +11,7 @@ type Prompt struct {
 	Title   string
 	Prompt  string
 	AltText string `gorm:"column:altText"`
+	PromptParams []PromptParam  `gorm:"foreignKey:PromptID"` // Добавляем связь
 }
 
 func (p Prompt) GetId() uint {
@@ -24,7 +25,7 @@ type PromptParam struct {
 	ID       uint `gorm:"unique;primaryKey;autoIncrement"`
 	Tag      string
 	Title    string
-	PromptID uint `gorm:"column:promptId"`
+	PromptID uint `gorm:"column:promptId;index"`
 }
 
 type TelegramChat struct {

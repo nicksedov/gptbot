@@ -29,3 +29,15 @@ type NewPromptFormView struct {
 	ParamTag3   string `json:"p3_name"`
 	ParamTitle3 string `json:"p3_title"`
 }
+
+type UpdatePromptFormView struct {
+	Title       string `json:"title"`
+	Prompt      string `json:"prompt"`
+	AltText     string `json:"altText"`
+	ParamTag1   string `json:"p1_name"`
+	ParamTitle1 string `json:"p1_title"`
+	ParamTag2   string `json:"p2_name"`
+	ParamTitle2 string `json:"p2_title"`
+	ParamTag3   string `json:"p3_name"`
+	ParamTitle3 string `json:"p3_title"`
+}
