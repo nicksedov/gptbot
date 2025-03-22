@@ -2,7 +2,6 @@ package controller
 
 import (
 	"log"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -13,80 +12,96 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func EventView(c *gin.Context) {
-	var tzOffset string = c.Query("tzoffset")
-	var filter string = c.Query("filter")
-	var alert string = c.Query("alert")
-	eventsTab, err := service.GetEventsTabView(tzOffset, filter, alert)
-	if err == nil {
-		c.JSON(http.StatusOK, eventsTab)
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
-	}
+func EventView(c *gin.Context) (interface{}, error) {
+	tzOffset := c.Query("tzoffset")
+	filter := c.Query("filter")
+	alert := c.Query("alert")
+	return service.GetEventsTabView(tzOffset, filter, alert)
 }
 
-func EventCreate(c *gin.Context) {
+func EventCreate(c *gin.Context) (interface{}, error) {
 	var newEvent view.NewEventFormView
-	c.ShouldBindJSON(&newEvent)
+	if err := c.ShouldBindJSON(&newEvent); err != nil {
+		return nil, err
+	}
+
 	event, err := service.BuildEventFromCreateView(&newEvent)
-	if err == nil {
-		err = model.CreateEvent(event)
-	}
 	if err != nil {
-		log.Printf("Failed to persist event record in database")
-	} else {
-		event, err = model.ReadEvent(event.ID) // enrich event with prompt details
+		return nil, err
 	}
+
+	if err := model.CreateEvent(event); err != nil {
+		log.Printf("Failed to persist event: %v", err)
+		return nil, err
+	}
+
+	event, err = model.ReadEvent(event.ID) // Reload with relations
 	if err != nil {
-		log.Printf("Failed to read event details from database")
+		log.Printf("Failed to read event: %v", err)
 	} else {
-		log.Printf("New event successfully registered with parameters:\n" +
-		"  ID = %d\n  fire time = %s\n", event.ID, event.GetTime().Format(time.RFC822))
+		log.Printf("New event registered: ID=%d Time=%s", 
+			event.ID, event.GetTime().Format(time.RFC822))
 		go service.PreprocessEvent(event)
 	}
-	onEventsChanged(c, err)
+
+	return nil, onEventsChanged()
 }
 
-func EventUpdate(c *gin.Context) {
+func EventUpdate(c *gin.Context) (interface{}, error) {
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 0, 0)
-	if err == nil {
-		var updEvent view.UpdateEventView
-		c.ShouldBindJSON(&updEvent)
-		event, updErr := service.BuildEventFromUpdateView(uint(id), &updEvent)
-		if updErr == nil {
-			updErr = model.UpdateEvent(event)
-		}
-		err = updErr
+	if err != nil {
+		return nil, err
 	}
-	onEventsChanged(c, err)
+
+	var updEvent view.UpdateEventView
+	if err := c.ShouldBindJSON(&updEvent); err != nil {
+		return nil, err
+	}
+
+	event, err := service.BuildEventFromUpdateView(uint(id), &updEvent)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := model.UpdateEvent(event); err != nil {
+		return nil, err
+	}
+
+	return nil, onEventsChanged()
 }
 
-func EventDelete(c *gin.Context) {
+func EventDelete(c *gin.Context) (interface{}, error) {
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 0, 0)
-	if err == nil {
-		err = model.DeleteEvent(uint(id))
+	if err != nil {
+		return nil, err
 	}
-	onEventsChanged(c, err)
+
+	if err := model.DeleteEvent(uint(id)); err != nil {
+		return nil, err
+	}
+
+	return nil, onEventsChanged()
 }
 
-func EventDeleteExpired(c *gin.Context) {
+func EventDeleteExpired(c *gin.Context) (interface{}, error) {
 	events, err := model.ReadEvents()
-	if err == nil {
-		now := time.Now()
-		for _, ev := range *events {
-			if ev.GetTime().Before(now) {
-				model.DeleteEvent(ev.ID)
-			}
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now()
+	for _, ev := range *events {
+		if ev.GetTime().Before(now) {
+			model.DeleteEvent(ev.ID)
 		}
 	}
-	onEventsChanged(c, err)
+
+	return nil, onEventsChanged()
 }
 
-func onEventsChanged(c *gin.Context, err error) {
-	if err == nil {
-		service.ScheduleEvents()
-		c.Status(http.StatusOK)
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
+func onEventsChanged() error {
+	if _, err := service.ScheduleEvents(); err != nil {
+		return err
 	}
+	return nil
 }

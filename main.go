@@ -31,24 +31,24 @@ func main() {
 	}
 	// Init HTTP server
 	router := gin.Default()
-	router.GET("/events/view", controller.EventView)
-	router.POST("/events/create", controller.EventCreate)
-	router.PUT("/events/update/:id", controller.EventUpdate)
-	router.DELETE("/events/:id", controller.EventDelete)
-	router.DELETE("/events/expired", controller.EventDeleteExpired)
+	router.GET("/events/view", controller.Wrap(controller.EventView))
+	router.POST("/events/create", controller.Wrap(controller.EventCreate))
+	router.PUT("/events/update/:id", controller.Wrap(controller.EventUpdate))
+	router.DELETE("/events/:id", controller.Wrap(controller.EventDelete))
+	router.DELETE("/events/expired", controller.Wrap(controller.EventDeleteExpired))
 
-	router.GET("/prompts/view", controller.PromptView)
-	router.POST("/prompts/create", controller.PromptCreate)
-	router.DELETE("/prompts/delete/:id", controller.PromptDelete)
+	router.GET("/prompts/view", controller.Wrap(controller.PromptView))
+	router.POST("/prompts/create", controller.Wrap(controller.PromptCreate))
+	router.DELETE("/prompts/delete/:id", controller.Wrap(controller.PromptDelete))
 
-	router.GET("/chats/view", controller.ChatView)
-	router.POST("/chats/create", controller.ChatCreate)
-	router.DELETE("/chats/delete/:id", controller.ChatDelete)
+	router.GET("/chats/view", controller.Wrap(controller.ChatView))
+	router.POST("/chats/create", controller.Wrap(controller.ChatCreate))
+	router.DELETE("/chats/delete/:id", controller.Wrap(controller.ChatDelete))
 
-	router.POST("/messages/create", controller.MessageCreate)
+	router.POST("/messages/create", controller.Wrap(controller.MessageCreate))
 
-	router.GET("/prebuilt/view", controller.PrebuiltMessageView)
-	router.PUT("/prebuilt/update/:id", controller.PrebuiltMessageUpdate)
+	router.GET("/prebuilt/view", controller.Wrap(controller.PrebuiltMessageView))
+	router.PUT("/prebuilt/update/:id", controller.Wrap(controller.PrebuiltMessageUpdate))
 
 	settings := settings.GetSettings()
 	serverAddress := fmt.Sprintf("%s:%d", settings.Server.Host, settings.Server.Port)

@@ -4,19 +4,24 @@ import (
 	"gptbot/pkg/model"
 	"gptbot/pkg/telegram"
 	"gptbot/pkg/view"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func MessageCreate(c *gin.Context) {
+func MessageCreate(c *gin.Context) (interface{}, error) {
 	var instantMsg view.InstantMessageFormView
-	c.ShouldBindJSON(&instantMsg)
-	tgChat, err := model.GetChat(instantMsg.TelegramChatID)
-	if err == nil {
-		telegram.SendMarkdownText(tgChat.ChatID, instantMsg.MessageText)
-		c.Status(http.StatusOK)
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
+	if err := c.ShouldBindJSON(&instantMsg); err != nil {
+		return nil, err
 	}
+
+	tgChat, err := model.GetChat(instantMsg.TelegramChatID)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := telegram.SendMarkdownText(tgChat.ChatID, instantMsg.MessageText); err != nil {
+		return nil, err
+	}
+
+	return nil, nil
 }

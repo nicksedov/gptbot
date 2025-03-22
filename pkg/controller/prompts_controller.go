@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"net/http"
 	"strconv"
 
 	"gptbot/pkg/model"
@@ -11,44 +10,46 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PromptView(c *gin.Context) {
-	var filter string = c.Query("filter")
-	promtsTab, err := service.GetPromptsTabView(filter)
-	if err == nil {
-		c.JSON(http.StatusOK, promtsTab)
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
-	}
+func PromptView(c *gin.Context) (interface{}, error) {
+	filter := c.Query("filter")
+	return service.GetPromptsTabView(filter)
 }
 
-func PromptCreate(c *gin.Context) {
+func PromptCreate(c *gin.Context) (interface{}, error) {
 	var newPrompt view.NewPromptFormView
-	c.ShouldBindJSON(&newPrompt)
+	if err := c.ShouldBindJSON(&newPrompt); err != nil {
+		return nil, err
+	}
+
 	prompt, params, err := service.BuildPromptFromCreateView(&newPrompt)
-	if err == nil {
-		err = model.CreatePrompt(prompt)
-		if err == nil {
-			for i := 0; i < len(params); i++ {
-				params[i].PromptID = prompt.ID
-			}
-			model.CreatePromptParams(params)
-		}
+	if err != nil {
+		return nil, err
 	}
-	onPromptsChanged(c, err)
+
+	if err := model.CreatePrompt(prompt); err != nil {
+		return nil, err
+	}
+
+	for i := range params {
+		params[i].PromptID = prompt.ID
+	}
+
+	if err := model.CreatePromptParams(params); err != nil {
+		return nil, err
+	}
+
+	return prompt, nil
 }
 
-func PromptDelete(c *gin.Context) {
+func PromptDelete(c *gin.Context) (interface{}, error) {
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 0, 0)
-	if err == nil {
-		err = model.DeletePrompt(uint(id))
+	if err != nil {
+		return nil, err
 	}
-	onPromptsChanged(c, err)
-}
 
-func onPromptsChanged(c *gin.Context, err error) {
-	if err == nil {
-		c.Status(http.StatusOK)
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
+	if err := model.DeletePrompt(uint(id)); err != nil {
+		return nil, err
 	}
+
+	return gin.H{"status": "deleted"}, nil
 }

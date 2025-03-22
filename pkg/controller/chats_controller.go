@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"net/http"
 	"strconv"
 
 	"gptbot/pkg/model"
@@ -11,34 +10,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ChatView(c *gin.Context) {
-	chatsTab, err := service.GetChatsTabView()
-	if err == nil {
-		c.JSON(http.StatusOK, chatsTab)
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
-	}
+func ChatView(c *gin.Context) (interface{}, error) {
+	return service.GetChatsTabView()
 }
 
-func ChatCreate(c *gin.Context) {
+func ChatCreate(c *gin.Context) (interface{}, error) {
 	chatView := &view.ChatView{}
-	err := c.ShouldBindJSON(chatView)
-	if err == nil {
-		model.CreateChat(&model.TelegramChat{ChatID: chatView.ChatID, ChatName: chatView.ChatName})
-		c.JSON(http.StatusOK, chatView)
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
+	if err := c.ShouldBindJSON(chatView); err != nil {
+		return nil, err
 	}
+	if err := model.CreateChat(&model.TelegramChat{
+		ChatID:   chatView.ChatID,
+		ChatName: chatView.ChatName,
+	}); err != nil {
+		return nil, err
+	}
+	return chatView, nil
 }
 
-func ChatDelete(c *gin.Context) {
+func ChatDelete(c *gin.Context) (interface{}, error) {
 	id, err := strconv.ParseUint(c.Params.ByName("id"), 0, 0)
-	if err == nil {
-		err = model.DeleteChat(uint(id))
+	if err != nil {
+		return nil, err
 	}
-	if err == nil {
-		c.Status(http.StatusOK)
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"Status": "Error", "ErrorMessage": err.Error()})
+	if err := model.DeleteChat(uint(id)); err != nil {
+		return nil, err
 	}
+	return gin.H{"status": "deleted"}, nil
 }
