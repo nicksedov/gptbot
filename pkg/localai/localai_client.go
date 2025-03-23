@@ -87,9 +87,10 @@ func prepareRequest(chatId int64, content string) *openai.CreateChatCompletionRe
 }
 
 func processResponse(chatId int64, resp *openai.CreateChatCompletionResponse) {
-	choices := resp.Choices
-	if len(choices) > 0 {
-		msg := choices[0]
-		updateHistory(chatId, msg.Message.Value.Role, msg.Message.Value.Content)
-	}
+    choices := resp.Choices
+    if len(choices) > 0 {
+        msg := choices[0].Message.Value
+        // Сохраняем только текстовую часть в историю
+        updateHistory(chatId, msg.Role, msg.Content)
+    }
 }

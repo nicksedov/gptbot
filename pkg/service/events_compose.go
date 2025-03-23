@@ -19,7 +19,7 @@ func PreprocessEvent(event *model.SingleEvent) {
 	err := model.CreatePrebuiltMessage(prebuilt)
 	if err == nil {
 		log.Printf("Run background preprocessing task for event with ID=%d\n", event.ID)
-		message, err = localai.GetMessageByPrompt(event)
+		message, _, err = localai.GetMessageByPrompt(event)
 		if err == nil {
 			prebuilt.Status = model.Created
 			prebuilt.Message = message

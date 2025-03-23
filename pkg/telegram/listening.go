@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"strings"
+	"errors"
 
 	//ai "gptbot/pkg/gigachat"
 	ai "gptbot/pkg/localai"
@@ -40,18 +41,27 @@ func handleMessage(message *tgbotapi.Message) error {
 }
 
 func processChat(chatId int64, prompt string) error {
-	resp, reqErr := ai.SendRequest(chatId, prompt)
-	if reqErr == nil {
-		respContent, respErr := ai.GetResponseContent(resp)
-		if respErr == nil {
-			_, sendErr := SendMarkdownText(chatId, respContent)
-			return sendErr
-		} else {
-			return respErr
-		}
-	} else {
-		return reqErr
-	}
+    resp, reqErr := ai.SendRequest(chatId, prompt)
+    if reqErr != nil {
+        return reqErr
+    }
+    
+    textResponse, imageURL, respErr := ai.GetResponseContent(resp)
+    if respErr != nil {
+        return respErr
+    }
+    
+    if imageURL != "" {
+        _, sendErr := SendPhotoWithCaption(chatId, imageURL, textResponse)
+        return sendErr
+    }
+    
+    if textResponse != "" {
+        _, sendErr := SendMarkdownText(chatId, textResponse)
+        return sendErr
+    }
+    
+    return errors.New("empty response from AI")
 }
 
 func logMessage(message *tgbotapi.Message) {

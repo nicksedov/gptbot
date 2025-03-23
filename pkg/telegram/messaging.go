@@ -18,3 +18,10 @@ func SendMarkdownText(chatId int64, content string) (tgbotapi.Message, error) {
 	chattable.ParseMode = "markdown"
 	return Send(chattable)
 }
+
+func SendPhotoWithCaption(chatId int64, url string, caption string) (tgbotapi.Message, error) {
+    photo := tgbotapi.NewPhoto(chatId, tgbotapi.FileURL(url))
+    photo.Caption = caption
+    photo.ParseMode = "markdown"
+    return Send(photo)
+}
