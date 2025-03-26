@@ -31,12 +31,12 @@ func GetResponseContent(resp *openai.CreateChatCompletionResponse) (string, stri
         imageURL := "" // Логика извлечения URL из ответа LocalAI
         
         // Если LocalAI возвращает URL в специальном формате
-        if strings.HasPrefix(content, "![image](") && strings.HasSuffix(content, ")") {
+        if strings.HasPrefix(content, "![image](") && strings.Contains(content, ")") {
             start := strings.Index(content, "(") + 1
             end := strings.Index(content, ")")
             imageURL = content[start:end]
+            log.Printf("Chat completion endpoint responded with image link: %s,\nfollowed by description: %s\n", imageURL, content[end+1:])
             content = ""
-            log.Printf("Chat completion endpoint responded with image link: %s\n", imageURL)
         }
         
         normalizedContent := strings.TrimSpace(content)
